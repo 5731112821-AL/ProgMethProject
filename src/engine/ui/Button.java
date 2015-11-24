@@ -1,22 +1,26 @@
 package engine.ui;
 
-import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
-import engine.game.InputManager.CustomMouseListener;
+import engine.game.InputManager.ScreenMouseListener;
+import engine.game.InputManager.MiniMouseListener;
 import engine.utilities.Range;
 
 public class Button extends VisibleObject {
 	
-	private CustomMouseListener customMouseListener;
+	private ScreenMouseListener screenMouseListener;
 
-	public CustomMouseListener getCustomMouseListener() {
-		return customMouseListener;
+	public ScreenMouseListener getCustomMouseListener() {
+		return screenMouseListener;
 	}
 
-	public Button(BufferedImage img, int screenX, int screenY, MouseListener mouseListener, int zIndex) {
-		super(img, screenX, screenY);
-		customMouseListener = new CustomMouseListener(
+	public Button(BufferedImage img, int screenX, int screenY, MiniMouseListener mouseListener) {
+		this(img, screenX, screenY, mouseListener, 0);
+	}
+	
+	public Button(BufferedImage img, int screenX, int screenY, MiniMouseListener mouseListener, int zIndex) {
+		super(img, screenX, screenY, img.getWidth(), img.getHeight());
+		screenMouseListener = new ScreenMouseListener(
 				mouseListener,
 				new Range(getScreenX(), getScreenX()+getWidth() ), 
 				new Range(getScreenY(), getScreenY()+getHeight()),

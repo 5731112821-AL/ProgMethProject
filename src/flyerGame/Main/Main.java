@@ -1,20 +1,20 @@
 package flyerGame.Main;
 
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 
 import engine.game.InputManager;
+import engine.game.InputManager.MiniMouseListener;
 import engine.render.GamePanel;
 import engine.render.RenderLayer;
 import engine.ui.Button;
-import engine.ui.VisibleObject;
 import flyerGame.EngineExtension.GameLogic;
 import flyerGame.EngineExtension.Resources;
 
 public class Main {
+	
 	public static void main(String[] args) {
 		System.out.println("Game Start");
 		
@@ -37,8 +37,8 @@ public class Main {
 		RenderLayer uiLayer = new RenderLayer();
 		renderLayers.add(uiLayer);
 		{/// Adding UI to System
-			uiLayer.addRenderable(new VisibleObject(Resources.ImgButton, 10, 10));
-			Button button = new Button(Resources.ImgButton, 100, 10, new MouseListener() {
+//			uiLayer.addRenderable(new VisibleObject(Resources.ImgButton, 10, 10));
+			Button button = new Button(Resources.ImgButton, 100, 10, new MiniMouseListener() {
 				
 				@Override
 				public void mouseReleased(MouseEvent e) {
@@ -53,24 +53,12 @@ public class Main {
 				}
 				
 				@Override
-				public void mouseExited(MouseEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
-				public void mouseEntered(MouseEvent e) {
-					// TODO Auto-generated method stub
-					
-				}
-				
-				@Override
 				public void mouseClicked(MouseEvent e) {
 					System.out.println("Button Clicked");
 				}
 			}, 2);
 			uiLayer.addRenderable(button);
-//			InputManager.
+			InputManager.addScreenMouseListener(button.getCustomMouseListener());
 		}
 		
 		JFrame frame = new JFrame("Flyer Game");

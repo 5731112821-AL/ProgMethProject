@@ -1,6 +1,6 @@
 package engine.utilities;
 
-public class Range {
+public class Range{
 	public final float min,max;
 	
 	public Range(float min, float max) {
@@ -34,6 +34,11 @@ public class Range {
 	
 	public boolean overlap(Range o){
 		return this.inRange(o.max) || this.inRange(o.min) || o.inRange(this.min);
+	}
+	
+	@Override
+	public String toString() {
+		return "Range from " + this.min + " to " + this.max;
 	}
 
 	public boolean inRange(float in){

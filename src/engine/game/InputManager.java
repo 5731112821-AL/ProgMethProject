@@ -16,7 +16,7 @@ public class InputManager {
 	private InputManager() {}
 	
 	public static KeyListener keyListener = new InputKeyListener();
-	public static MouseListener mouseListener = new ScreenMouseListener();
+	public static MouseListener mouseListener = new ManagerMouseListener();
 	public static MouseMotionListener mouseMotionListener = new InputMouseMotionListener();
 	
 	public static final int 
@@ -24,23 +24,33 @@ public class InputManager {
 		DownArrowKey  = 40,
 		LeftArrowKey  = 37,
 		RightArrowKey = 39;
+
+	public static interface MiniMouseListener{
+		public void mouseClicked(MouseEvent e);
+		public void mousePressed(MouseEvent e);
+		public void mouseReleased(MouseEvent e);
+	}
 	
-	public static class CustomMouseListener{
-		MouseListener mouseListener;
+	public static class ScreenMouseListener{
+		
+		MiniMouseListener mouseListener;
 		Range boundX,boundY;
-		int zIndex;
+		double zIndex;
 		boolean isActive;
 		
-		public CustomMouseListener(MouseListener mouseListener, Range boundX, Range boundY, int zIndex) {
+		public ScreenMouseListener(MiniMouseListener mouseListener, Range boundX, Range boundY, double zIndex) {
 			this.mouseListener = mouseListener;
 			this.boundX = boundX;
 			this.boundY = boundY;
 			this.zIndex = zIndex;
+			this.isActive = true;
 		}
 	}
 
-	public static synchronized boolean isKeyActive(int key) {
-		return keyActive[key];
+	public static boolean isKeyActive(int key) {
+		synchronized (InputManager.keyActive) {
+			return InputManager.keyActive[key];	
+		}
 	}
 
 	public static boolean isMouseOnScreen() {
@@ -53,16 +63,18 @@ public class InputManager {
 		comp.addMouseMotionListener(mouseMotionListener);
 	}
 	
-	private static ArrayList<CustomMouseListener> customMouseListeners = new ArrayList<CustomMouseListener>();
+	private static ArrayList<ScreenMouseListener> screenMouseListeners = new ArrayList<ScreenMouseListener>();
 	
-	public static void addCustomMouseListener(CustomMouseListener customMouseListener){
-		customMouseListeners.add(customMouseListener);
+	public static void addScreenMouseListener(ScreenMouseListener screenMouseListener){
+		screenMouseListeners.add(screenMouseListener);
 	}
 	
-	private static synchronized void setKeyActive(int key, boolean active) {
+	private static void setKeyActive(int key, boolean active) {
 		if(active != InputManager.keyActive[key])
 			System.out.println("Key "+key+" is "+(active?"active":"inactive"));
-		InputManager.keyActive[key] = active;
+		synchronized (InputManager.keyActive) {
+			InputManager.keyActive[key] = active;	
+		}
 	}
 
 	private static boolean[] keyActive = new boolean[256];
@@ -72,21 +84,24 @@ public class InputManager {
 		InputManager.mouseOnScreen = mouseOnScreen;
 	}
 	
-	private static class ScreenMouseListener implements MouseListener {
+	private static class ManagerMouseListener implements MouseListener {
 
 		private static void updateCustomMouseListeners(){
-			customMouseListeners.sort(new Comparator<CustomMouseListener>() {
+			screenMouseListeners.sort(new Comparator<ScreenMouseListener>() {
 				@Override
-				public int compare(CustomMouseListener o1, CustomMouseListener o2) {
-					return o1.zIndex - o2.zIndex;
+				public int compare(ScreenMouseListener o1, ScreenMouseListener o2) {
+					return Double.compare(o1.zIndex, o2.zIndex);
 				}
 			});
 		}
 		
-		private static MouseListener findMouseListenerAt(int x, int y) {
+		private static MiniMouseListener findMouseListenerAt(int x, int y) {
 			updateCustomMouseListeners();
-			for(int c=customMouseListeners.size()-1; c>=0; c++){
-				CustomMouseListener customMouseListener = customMouseListeners.get(c);
+			for(int c=screenMouseListeners.size()-1; c>=0; c--){
+				ScreenMouseListener customMouseListener = screenMouseListeners.get(c);
+//				System.out.println(customMouseListener.isActive);
+//				System.out.println(customMouseListener.boundX);
+//				System.out.println(customMouseListener.boundY);
 				if(customMouseListener.isActive==true && customMouseListener.boundX.inRange(x) && customMouseListener.boundY.inRange(y)){
 					return customMouseListener.mouseListener;
 				}
@@ -96,10 +111,9 @@ public class InputManager {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			int x = e.getXOnScreen(),
-				y = e.getYOnScreen();
-			System.out.println("Mouse Clicked At ("+x+","+y+")");
-			MouseListener ml = findMouseListenerAt(x, y);
+			Point location = e.getPoint();
+			System.out.println("Mouse Clicked At ("+location.getX()+","+location.getY()+")");
+			MiniMouseListener ml = findMouseListenerAt((int)location.getX(), (int)location.getY());
 			if(ml!=null){
 				ml.mouseClicked(e);
 			}
@@ -107,9 +121,8 @@ public class InputManager {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
-			int x = e.getXOnScreen(),
-				y = e.getYOnScreen();
-			MouseListener ml = findMouseListenerAt(x, y);
+			Point location = e.getPoint();
+			MiniMouseListener ml = findMouseListenerAt((int)location.getX(), (int)location.getY());
 			if(ml!=null){
 				ml.mousePressed(e);
 			}
@@ -117,9 +130,8 @@ public class InputManager {
 
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			int x = e.getXOnScreen(),
-				y = e.getYOnScreen();
-			MouseListener ml = findMouseListenerAt(x, y);
+			Point location = e.getPoint();
+			MiniMouseListener ml = findMouseListenerAt((int)location.getX(), (int)location.getY());
 			if(ml!=null){
 				ml.mouseReleased(e);
 			}

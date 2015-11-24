@@ -40,9 +40,11 @@ public class VisibleObject implements Renderable {
 		return height;
 	}
 
-	public VisibleObject(BufferedImage img, int screenX, int screenY) {
+	public VisibleObject(BufferedImage img, int screenX, int screenY, int width, int height) {
 		super();
 		this.img = img;
+		this.width = width;
+		this.height = height;
 		this.screenX = screenX;
 		this.screenY = screenY;
 		this.isVisible = true;
