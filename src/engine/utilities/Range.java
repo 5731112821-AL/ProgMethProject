@@ -1,7 +1,7 @@
 package engine.utilities;
 
 public class Range{
-	public final float min,max;
+	public float min,max;
 	
 	public Range(float min, float max) {
 		super();
@@ -29,7 +29,7 @@ public class Range{
 	}
 	
 	public float random(){
-		return (float) ( min + Math.random()*size());
+		return (float) ( min + Math.random()*size() );
 	}
 	
 	public boolean overlap(Range o){
@@ -42,9 +42,6 @@ public class Range{
 	}
 
 	public boolean inRange(float in){
-		return min <= in && in <= max;
-	}
-	public boolean insideRange(float in){
 		return min <= in && in <= max;
 	}
 	public boolean outsideRange(float in){

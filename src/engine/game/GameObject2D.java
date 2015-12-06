@@ -4,21 +4,18 @@ import engine.utilities.Cordinate2D;
 import engine.utilities.Range;
 
 public abstract class GameObject2D implements Cordinate2D{
-
-	public static final Range DEFAULT_RANGE() { return new Range(0, 100); }
 	
 	private float x,y;
 	private boolean isDestory;
 
 	private Range xRange, yRange;
 
-	
-	public GameObject2D() {
-		this(DEFAULT_RANGE(), DEFAULT_RANGE());
-	}
-	public GameObject2D(Range xRange, Range yRange) {
-		this(0, 0, xRange, yRange);
-	}
+	/**
+	 * @param x - x-axis value of the Game Coordinate
+	 * @param y - y-axis value of the Game Coordinate
+	 * @param xRange - Bound of the x-axis value of the Game Coordinate
+	 * @param yRange - Bound of the y-axis value of the Game Coordinate
+	 */
 	public GameObject2D(float x, float y, Range xRange, Range yRange) {
 		super();
 		this.xRange = xRange;
@@ -46,14 +43,24 @@ public abstract class GameObject2D implements Cordinate2D{
 
 	
 	public void setX(float x) {
-		this.x = xRange.bound(x);
+		if(xRange != null)
+			this.x = xRange.bound(x);
+		else
+			this.x = x;
 	}
 	public void setY(float y) {
-		this.y = yRange.bound(y);
+		if(yRange != null)
+			this.y = yRange.bound(y);
+		else
+			this.y = y;
 	}
 	
+	/**
+	 * When the {@link GameObject2D} is destroyed, it is 
+	 * automatically removed from the {@link GameLogic}
+	 */
 	protected void destory() {
-//		System.out.println(this+" is destoryed");
+//		System.out.println(this+" is destroyed");
 		this.isDestory = true;
 	}
 }

@@ -26,8 +26,8 @@ public class InputManager {
 		RightArrowKey = 39;
 
 	/**
-	 * @author BobbyL2k
 	 * {@link MiniMouseListener} is a reduced-complexity of {@link MouseListener} in java.awt
+	 * @author BobbyL2k
 	 */
 	public static interface MiniMouseListener{
 		public void mouseClicked(MouseEvent e);
@@ -36,9 +36,9 @@ public class InputManager {
 	}
 	
 	/**
-	 * @author BobbyL2k
 	 * {@link ScreenMouseListener} is a {@link MiniMouseListener}
 	 * with screen coordinates (Bounds) and Layer Depth (zIndex).
+	 * @author BobbyL2k
 	 */
 	public static class ScreenMouseListener{
 		

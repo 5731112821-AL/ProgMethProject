@@ -4,8 +4,8 @@ import engine.utilities.Cordinate3D;
 import engine.utilities.Range;
 
 /**
- * @author BobbyL2k
  * GameObject3D is currently unused in the Project
+ * @author BobbyL2k
  */
 public abstract class GameObject3D extends GameObject2D implements Cordinate3D{
 	
@@ -15,9 +15,6 @@ public abstract class GameObject3D extends GameObject2D implements Cordinate3D{
 	@Override
 	public float getZ() { return z; }
 	
-	public GameObject3D() {
-		this(DEFAULT_RANGE(), DEFAULT_RANGE(), DEFAULT_RANGE());
-	}
 	public GameObject3D(Range xRange, Range yRange, Range zRange) {
 		this(0, 0, 0, xRange, yRange, zRange);
 	}
