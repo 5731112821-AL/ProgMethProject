@@ -19,6 +19,14 @@ public class Button extends VisibleObject {
 		return screenMouseListener;
 	}
 
+	public void setZIndex(double zIndex) {
+		getScreenMouseListener().setzIndex(zIndex);
+	}
+	
+	public double getZIndex() {
+		return getScreenMouseListener().getzIndex();
+	}
+
 	/**
 	 * @param img - Image of the Button
 	 * @param screenX - Top Left x-axis screen coordinate of the Button

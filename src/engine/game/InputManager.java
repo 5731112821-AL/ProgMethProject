@@ -15,9 +15,9 @@ import engine.utilities.Range;
 public class InputManager {
 	private InputManager() {}
 	
-	public static KeyListener keyListener = new InputKeyListener();
-	public static MouseListener mouseListener = new ManagerMouseListener();
-	public static MouseMotionListener mouseMotionListener = new InputMouseMotionListener();
+	public static final KeyListener keyListener = new InputKeyListener();
+	public static final MouseListener mouseListener = new ManagerMouseListener();
+	public static final MouseMotionListener mouseMotionListener = new InputMouseMotionListener();
 	
 	public static final int 
 		UpArrowKey    = 38,
@@ -36,6 +36,7 @@ public class InputManager {
 		MiniMouseListener mouseListener;
 		Range boundX,boundY;
 		double zIndex;
+
 		boolean isActive;
 		
 		public ScreenMouseListener(MiniMouseListener mouseListener, Range boundX, Range boundY, double zIndex) {
@@ -44,6 +45,14 @@ public class InputManager {
 			this.boundY = boundY;
 			this.zIndex = zIndex;
 			this.isActive = true;
+		}
+
+		public double getzIndex() {
+			return zIndex;
+		}
+
+		public void setzIndex(double zIndex) {
+			this.zIndex = zIndex;
 		}
 	}
 

@@ -54,9 +54,8 @@ public class GameLogic extends engine.game.GameLogic {
 		
 	}
 	
-	@Override
-	protected void removeGameObject(GameObject2D obj) {
-		super.removeGameObject(obj);
+	public void removeGameObject(GameObject2D obj) {
+		super.removeGameObjectNextTick(obj);
 		if (obj instanceof Bullet) {
 			Bullet bullet = (Bullet) obj;
 			bulletList.remove(bullet);

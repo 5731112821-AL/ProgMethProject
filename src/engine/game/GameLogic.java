@@ -44,7 +44,7 @@ public abstract class GameLogic {
 			updatePreList.add((Updatable) obj);
 		gameObjects.add(obj);
 	}
-	protected void removeGameObject(GameObject2D obj){
+	private void removeGameObject(GameObject2D obj){
 //		System.out.println("Remove Game Object " + obj);
 		if(obj instanceof Renderable)
 			renderList.remove((Renderable) obj);
