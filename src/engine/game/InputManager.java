@@ -25,20 +25,29 @@ public class InputManager {
 		LeftArrowKey  = 37,
 		RightArrowKey = 39;
 
+	/**
+	 * @author BobbyL2k
+	 * {@link MiniMouseListener} is a reduced-complexity of {@link MouseListener} in java.awt
+	 */
 	public static interface MiniMouseListener{
 		public void mouseClicked(MouseEvent e);
 		public void mousePressed(MouseEvent e);
 		public void mouseReleased(MouseEvent e);
 	}
 	
+	/**
+	 * @author BobbyL2k
+	 * {@link ScreenMouseListener} is a {@link MiniMouseListener}
+	 * with screen coordinates (Bounds) and Layer Depth (zIndex).
+	 */
 	public static class ScreenMouseListener{
 		
-		MiniMouseListener mouseListener;
-		Range boundX,boundY;
-		double zIndex;
+		private MiniMouseListener mouseListener;
+		private Range boundX,boundY;
+		private double zIndex;
 
-		boolean isActive;
-		
+		private boolean isActive;
+
 		public ScreenMouseListener(MiniMouseListener mouseListener, Range boundX, Range boundY, double zIndex) {
 			this.mouseListener = mouseListener;
 			this.boundX = boundX;
@@ -46,6 +55,16 @@ public class InputManager {
 			this.zIndex = zIndex;
 			this.isActive = true;
 		}
+		
+
+		public boolean isActive() {
+			return isActive;
+		}
+
+		public void setActive(boolean isActive) {
+			this.isActive = isActive;
+		}
+		
 
 		public double getzIndex() {
 			return zIndex;
@@ -107,12 +126,9 @@ public class InputManager {
 		private static MiniMouseListener findMouseListenerAt(int x, int y) {
 			updateCustomMouseListeners();
 			for(int c=screenMouseListeners.size()-1; c>=0; c--){
-				ScreenMouseListener customMouseListener = screenMouseListeners.get(c);
-//				System.out.println(customMouseListener.isActive);
-//				System.out.println(customMouseListener.boundX);
-//				System.out.println(customMouseListener.boundY);
-				if(customMouseListener.isActive==true && customMouseListener.boundX.inRange(x) && customMouseListener.boundY.inRange(y)){
-					return customMouseListener.mouseListener;
+				ScreenMouseListener screenMouseListener = screenMouseListeners.get(c);
+				if(screenMouseListener.isActive==true && screenMouseListener.boundX.inRange(x) && screenMouseListener.boundY.inRange(y)){
+					return screenMouseListener.mouseListener;
 				}
 			}
 			return null;

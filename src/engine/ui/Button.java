@@ -45,7 +45,7 @@ public class Button extends VisibleObject {
 	 * @param mouseListener - {@link MiniMouseListener} for capturing mouse events
 	 * @param zIndex - zIndex value for the {@link ScreenMouseListener}.
 	 */
-	public Button(BufferedImage img, int screenX, int screenY, MiniMouseListener mouseListener, int zIndex) {
+	public Button(BufferedImage img, int screenX, int screenY, MiniMouseListener mouseListener, double zIndex) {
 		super(img, screenX, screenY, img.getWidth(), img.getHeight());
 		screenMouseListener = new ScreenMouseListener(
 				mouseListener,
