@@ -63,8 +63,8 @@ public abstract class GameLogic {
 	}
 	
 	/**
-	 * GameLogic() calls gameInit()
-	 * Therefore must NOT be override
+	 * GameLogic() calls gameInit() then starts the timer for
+	 * the Engine's FrameTime system. Therefore should NOT be override
 	 * Please do variable initialization in gameInit()
 	 */
 	public GameLogic() {
