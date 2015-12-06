@@ -58,7 +58,7 @@ public class Main {
 				}
 			}, 2);
 			uiLayer.addRenderable(button);
-			InputManager.addScreenMouseListener(button.getCustomMouseListener());
+			InputManager.addScreenMouseListener(button.getScreenMouseListener());
 		}
 		
 		JFrame frame = new JFrame("Flyer Game");

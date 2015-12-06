@@ -7,22 +7,25 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 
 import engine.game.GameLogic.Updatable;
 
 /**
- * @author L2k-nForce
- * is used for all rendering in the Engine. This includes UI and game elements.
+ * GamePanel is used for all rendering in the Engine. This includes UI and game elements.
+ * This is meant to be added directly to the {@link JFrame} of the application.
+ * @author BobbyL2k
  */
 @SuppressWarnings("serial")
 public class GamePanel extends JComponent implements Updatable{
 	private Dimension dimension;
 	private ArrayList<RenderLayer> renderLayers;
 	
-	public GamePanel(Dimension dimension) {
-		this(dimension, null);
-	}
-
+	
+	/**
+	 * @param dimension - Dimension of the GamePanel
+	 * @param renderLayers - Pass in null if you want to set it later with setRenderLayers
+	 */
 	public GamePanel(Dimension dimension, ArrayList<RenderLayer> renderLayers) {
 		super();
 		this.dimension = dimension;
@@ -49,6 +52,9 @@ public class GamePanel extends JComponent implements Updatable{
 		return renderLayers;
 	}
 
+	/**
+	 * @param renderLayers - replaces the old renderLayers(if set)
+	 */
 	public void setRenderLayers(ArrayList<RenderLayer> renderLayers) {
 		this.renderLayers = renderLayers;
 	}
