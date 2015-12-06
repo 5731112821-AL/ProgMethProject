@@ -45,7 +45,9 @@ public class Bullet extends Target implements HitableBox2D, Moving2D {
 
 	@Override
 	public boolean isHitting(HitableBox2D obj) {
-		return obj.getClass() != this.parent && HitableBox2D.super.isHitting(obj);
+		return 
+				obj.getClass() != this.parent &&
+				HitableBox2D.super.isHitting(obj);
 	}
 	
 	@Override

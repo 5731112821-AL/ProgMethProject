@@ -7,6 +7,7 @@ import engine.render.RenderLayer.Renderable;
 public abstract class GameLogic {
 	
 	protected abstract void gameLoop(long frameTime);
+	protected abstract void objectDestroyReport(GameObject2D gameObject2D);
 	
 	private long oldTime;
 	private int sleepTime;
@@ -57,8 +58,10 @@ public abstract class GameLogic {
 		/// Remove destroyed object
 		for(int c=gameObjects.size()-1; c>=0; c--){
 			GameObject2D obj = gameObjects.get(c);
-			if(obj.isDestroy())
+			if(obj.isDestroy()){
+				objectDestroyReport(obj);
 				removeGameObject(obj);
+			}
 		}
 	}
 	
@@ -113,6 +116,7 @@ public abstract class GameLogic {
 		for(Updatable updatable : updatePostList)
 			updatable.update(frameTime);
 		
+//		System.out.println("gameObjects"+gameObjects.size());
 //		System.out.println("renderList"+renderList.size());
 		
 	}

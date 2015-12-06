@@ -49,15 +49,20 @@ public class GameLogic extends engine.game.GameLogic {
 				
 			}
 		}
+		System.out.println("bulletList"+bulletList.size());
+		System.out.println("targetList"+targetList.size());
 	}
 
 	public void addGameObject(GameObject2D obj) {
 		super.addGameObjectNextTick(obj);
-		
+	}
+
+	@Override
+	protected void objectDestroyReport(GameObject2D gameObject2D) {
+		removeGameObjectFromLocal(gameObject2D);
 	}
 	
-	public void removeGameObject(GameObject2D obj) {
-		super.removeGameObjectNextTick(obj);
+	private void removeGameObjectFromLocal(GameObject2D obj) {
 		if (obj instanceof Bullet) {
 			Bullet bullet = (Bullet) obj;
 			bulletList.remove(bullet);
@@ -66,6 +71,11 @@ public class GameLogic extends engine.game.GameLogic {
 			Target target = (Target) obj;
 			targetList.remove(target);
 		}
+	}
+	
+	public void removeGameObject(GameObject2D obj) {
+		super.removeGameObjectNextTick(obj);
+		removeGameObjectFromLocal(obj);
 	}
 
 	public void addBullet(Bullet bullet){
