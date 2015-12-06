@@ -11,6 +11,8 @@ import flyerGame.GameObject.Target;
 
 public class GameLogic extends engine.game.GameLogic {
 
+	private static final int TARGET_FPS = 60;
+
 	Player player;
 	
 	private ArrayList<Bullet> bulletList;
@@ -19,8 +21,8 @@ public class GameLogic extends engine.game.GameLogic {
 	private int enemyTargetSpawnTimeCounter;
 	private static final Range ENEMY_TARGET_SPAWN_TIME = new Range(1000, 3000);
 	
-	@Override
-	protected void gameInit() {
+	public GameLogic() {
+		super(TARGET_FPS);
 		bulletList = new ArrayList<>();
 		targetList = new ArrayList<>();
 		

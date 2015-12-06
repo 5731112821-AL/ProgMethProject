@@ -3,6 +3,10 @@ package engine.game;
 import engine.utilities.Cordinate3D;
 import engine.utilities.Range;
 
+/**
+ * @author BobbyL2k
+ * GameObject3D is currently unused in the Project
+ */
 public abstract class GameObject3D extends GameObject2D implements Cordinate3D{
 	
 	private float z;
