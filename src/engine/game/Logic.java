@@ -4,13 +4,15 @@ import java.util.ArrayList;
 
 import engine.render.RenderLayer.Renderable;
 
-public abstract class GameLogic {
+public abstract class Logic {
 	
-	protected abstract void gameLoop(long frameTime);
+	protected abstract void logicLoop(long frameTime);
+	protected abstract void onExitLogic();
 	protected abstract void objectDestroyReport(GameObject2D gameObject2D);
 	
 	private long oldTime;
 	private int sleepTime;
+	private boolean logicIsRunning = false;
 
 	private ArrayList<Renderable> renderList;
 	private ArrayList<Updatable> updatePreList;
@@ -68,7 +70,7 @@ public abstract class GameLogic {
 	/**
 	 * Use GameLogic() to initialize the game states.
 	 */
-	public GameLogic(int maxFPS) {
+	public Logic(int maxFPS) {
 		renderList			= new ArrayList<>();
 		updatePreList		= new ArrayList<>();
 		updatePostList		= new ArrayList<>(); 
@@ -97,6 +99,7 @@ public abstract class GameLogic {
 //			System.out.println("FPS :"+1000/frameTime);
 //		}
 
+		InputManager.executeAllMouseEvent();
 		// Check list for destroyed objects
 		updateGameObjectList();
 		// Add and Remove pending Objects
@@ -111,7 +114,7 @@ public abstract class GameLogic {
 		for(Updatable updatable : updatePreList)
 			updatable.update(frameTime);
 		
-		gameLoop(frameTime);
+		logicLoop(frameTime);
 		
 		for(Updatable updatable : updatePostList)
 			updatable.update(frameTime);
@@ -122,17 +125,23 @@ public abstract class GameLogic {
 	}
 	
 	public void runGame() {
+		logicIsRunning = true;
 		oldTime = System.currentTimeMillis();
-		while(true){
+		while(logicIsRunning){
 			update();
 			try{
 				Thread.sleep(sleepTime);
 			}catch(InterruptedException e){
-				return;
+				break;
 			};
 		}
+		onExitLogic();
 	}
-
+	
+	protected void stopGameLoop(){
+		logicIsRunning = false;
+	}
+	
 	protected int getSleepTime() {
 		return sleepTime;
 	}

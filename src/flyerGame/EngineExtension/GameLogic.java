@@ -3,13 +3,16 @@ package flyerGame.EngineExtension;
 import java.util.ArrayList;
 
 import engine.game.GameObject2D;
+import engine.game.InputManager;
+import engine.render.GamePanel;
+import engine.render.RenderLayer;
 import engine.utilities.Range;
 import flyerGame.GameObject.Bullet;
 import flyerGame.GameObject.EnemyTarget;
 import flyerGame.GameObject.Player;
 import flyerGame.GameObject.Target;
 
-public class GameLogic extends engine.game.GameLogic {
+public class GameLogic extends engine.game.Logic {
 
 	private static final int TARGET_FPS = 60;
 
@@ -17,12 +20,22 @@ public class GameLogic extends engine.game.GameLogic {
 	
 	private ArrayList<Bullet> bulletList;
 	private ArrayList<Target> targetList; 
+	private GamePanel gamePanel;
+	private RenderLayer gameLayer;
 
 	private int enemyTargetSpawnTimeCounter;
 	private static final Range ENEMY_TARGET_SPAWN_TIME = new Range(1000, 3000);
 	
-	public GameLogic() {
+	public GameLogic(GamePanel gamePanel) {
 		super(TARGET_FPS);
+		this.gamePanel = gamePanel;
+		{/// Adding Game to System
+			updatePostList.add(gamePanel);// Add gamePanel's render system to render after the GameLoop (updatePostList)
+		}
+		
+		gameLayer = new RenderLayer(getRenderList());
+		this.gamePanel.getRenderLayers().add(gameLayer);
+		
 		bulletList = new ArrayList<>();
 		targetList = new ArrayList<>();
 		
@@ -32,9 +45,16 @@ public class GameLogic extends engine.game.GameLogic {
 		enemyTargetSpawnTimeCounter = (int)ENEMY_TARGET_SPAWN_TIME.random();
 	}
 
+//	private int counter = 3000;
 	
 	@Override
-	protected void gameLoop(long frameTime) {
+	protected void logicLoop(long frameTime) {
+		if(InputManager.isKeyActive(InputManager.KEY_ESC)){
+			System.out.println("Atemp Exit");
+			stopGameLoop();
+			
+			return;
+		}
 		enemyTargetSpawnTimeCounter -= frameTime;
 		if(enemyTargetSpawnTimeCounter < 0){
 			enemyTargetSpawnTimeCounter = (int)ENEMY_TARGET_SPAWN_TIME.random();
@@ -49,8 +69,8 @@ public class GameLogic extends engine.game.GameLogic {
 				
 			}
 		}
-		System.out.println("bulletList"+bulletList.size());
-		System.out.println("targetList"+targetList.size());
+//		System.out.println("bulletList"+bulletList.size());
+//		System.out.println("targetList"+targetList.size());
 	}
 
 	public void addGameObject(GameObject2D obj) {
@@ -86,6 +106,12 @@ public class GameLogic extends engine.game.GameLogic {
 	public void addTarget(Target target){
 		addGameObjectNextTick(target);
 		targetList.add(target);
+	}
+
+	@Override
+	protected void onExitLogic() {
+		System.out.println("Attemp exit");
+		gamePanel.getRenderLayers().remove(this.gameLayer);
 	}
 	
 }
