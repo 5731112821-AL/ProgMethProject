@@ -36,16 +36,16 @@ public class InputManager {
 			return InputManager.keyActive[key];	
 		}
 	}
-
-	private static void setKeyActive(int key, boolean active) {
-		if(active != InputManager.keyActive[key])
-			System.out.println("Key "+key+" is "+(active?"active":"inactive"));
-		synchronized (InputManager.keyActive) {
-			InputManager.keyActive[key] = active;	
-		}
-	}
-
+	
 	public static final KeyListener keyListener = new KeyListener() {
+
+		private void setKeyActive(int key, boolean active) {
+			if(active != InputManager.keyActive[key])
+				System.out.println("Key "+key+" is "+(active?"active":"inactive"));
+			synchronized (InputManager.keyActive) {
+				InputManager.keyActive[key] = active;	
+			}
+		}
 
 		@Override
 		public void keyTyped(KeyEvent e) {
@@ -55,12 +55,12 @@ public class InputManager {
 		
 		@Override
 		public void keyReleased(KeyEvent e) {
-			InputManager.setKeyActive(e.getKeyCode(), false);
+			setKeyActive(e.getKeyCode(), false);
 		}
 		
 		@Override
 		public void keyPressed(KeyEvent e) {
-			InputManager.setKeyActive(e.getKeyCode(), true);
+			setKeyActive(e.getKeyCode(), true);
 		}
 	};
 	
@@ -105,6 +105,10 @@ public class InputManager {
 	}
 
 	private static ArrayList<ScreenMouseListener> screenMouseListeners = new ArrayList<ScreenMouseListener>();
+	public static void addScreenMouseListener(ScreenMouseListener screenMouseListener){
+		screenMouseListeners.add(screenMouseListener);
+	}
+	
 
 	/**
 	 * {@link MiniMouseListener} is a reduced-complexity of {@link MouseListener} in java.awt
@@ -120,10 +124,6 @@ public class InputManager {
 	
 	public static boolean isMouseOnScreen() {
 		return mouseOnScreen;
-	}
-	
-	private static void setMouseOnScreen(boolean mouseOnScreen) {
-		InputManager.mouseOnScreen = mouseOnScreen;
 	}
 
 	// Mouse
@@ -189,6 +189,10 @@ public class InputManager {
 			}
 		}
 
+		private void setMouseOnScreen(boolean mouseOnScreen) {
+			InputManager.mouseOnScreen = mouseOnScreen;
+		}
+		
 		@Override
 		public void mouseEntered(MouseEvent e) {
 			setMouseOnScreen(true);
@@ -219,10 +223,6 @@ public class InputManager {
 		}
 	};
 
-	public static void addScreenMouseListener(ScreenMouseListener screenMouseListener){
-		screenMouseListeners.add(screenMouseListener);
-	}
-	
 	private static class PendingMouseEvent{
 
 		public static enum EventType{ click, press, release }
@@ -255,7 +255,6 @@ public class InputManager {
 	}
 	
 	private static ArrayList<PendingMouseEvent> pendingMouseEvents = new ArrayList<>();
-	
 	public static void executeAllMouseEvent(){
 		ArrayList<PendingMouseEvent> tempPendingMouseEvents = pendingMouseEvents;
 		pendingMouseEvents = new ArrayList<PendingMouseEvent>();
