@@ -4,7 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-import engine.game.GameLogic.Updatable;
+import engine.game.Logic.Updatable;
 import engine.game.GameObject2D;
 import engine.render.RenderLayer.Renderable;
 import engine.utilities.HitableBox2D;

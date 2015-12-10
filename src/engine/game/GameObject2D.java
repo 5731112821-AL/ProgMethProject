@@ -57,7 +57,7 @@ public abstract class GameObject2D implements Cordinate2D{
 	
 	/**
 	 * When the {@link GameObject2D} is destroyed, it is 
-	 * automatically removed from the {@link GameLogic}
+	 * automatically removed from the {@link Logic}
 	 */
 	protected void destory() {
 //		System.out.println(this+" is destroyed");

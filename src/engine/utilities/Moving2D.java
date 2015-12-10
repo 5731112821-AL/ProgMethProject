@@ -1,6 +1,6 @@
 package engine.utilities;
 
-import engine.game.GameLogic.Updatable;
+import engine.game.Logic.Updatable;
 
 public interface Moving2D extends Cordinate2D, Updatable {
 

@@ -36,17 +36,17 @@ public class Resources {
 	}
 	
 	public static BufferedImage ImgButton;
-//	public static AudioClip coinSound;
+	public static BufferedImage StartButton;
 	
 	static{
 		try {
 			ClassLoader loader = Resources.class.getClassLoader();
 			ImgButton = ImageIO.read(loader.getResource("flyerGame/res/button.png"));
-//			coinSound = Applet.newAudioClip((loader.getResource("res/coin.wav")).toURI().toURL());
+			StartButton = ImageIO.read(loader.getResource("flyerGame/res/start_button.png"));
 			System.out.println("Resouces Sucessfully loaded YAY !!!");
 		} catch (Exception e) {
 			ImgButton = null;
-//			coinSound = null;
+			StartButton = null;
 			System.out.println("Resouces Failed to load !!!");
 		}
 	}
