@@ -9,6 +9,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 
 import engine.utilities.Range;
 
@@ -256,10 +257,11 @@ public class InputManager {
 	
 	private static ArrayList<PendingMouseEvent> pendingMouseEvents = new ArrayList<>();
 	public static void executeAllMouseEvent(){
-		ArrayList<PendingMouseEvent> tempPendingMouseEvents = pendingMouseEvents;
-		pendingMouseEvents = new ArrayList<PendingMouseEvent>();
-		for(PendingMouseEvent pendingMouseEvent : tempPendingMouseEvents)
+		for (Iterator<PendingMouseEvent> iterator = pendingMouseEvents.iterator(); iterator.hasNext();){
+			PendingMouseEvent pendingMouseEvent = iterator.next();
+			iterator.remove();
 			pendingMouseEvent.execute();
+		}
 	}
 
 }
