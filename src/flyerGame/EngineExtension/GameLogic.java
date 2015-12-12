@@ -1,7 +1,11 @@
 package flyerGame.EngineExtension;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import osuUtilities.OsuBeatmap;
+import osuUtilities.OsuBeatmap.HitCircle;
 import engine.game.GameObject2D;
 import engine.game.InputManager;
 import engine.render.GamePanel;
@@ -25,9 +29,29 @@ public class GameLogic extends engine.game.Logic {
 
 	private int enemyTargetSpawnTimeCounter;
 	private static final Range ENEMY_TARGET_SPAWN_TIME = new Range(1000, 3000);
+	private long songStartTime;
+	
+	private ArrayList<HitCircle> hitCircles = null;
 	
 	public GameLogic(GamePanel gamePanel) {
 		super(TARGET_FPS);
+
+		try {
+			OsuBeatmap beatmap = new OsuBeatmap(new File("src/flyerGame/res/Tatsh - Lunatic Tears...(Tatsh Remix) (Suzully) [Hard].osu"));
+			hitCircles = beatmap.hitCircles;
+			System.out.println("loaded beatmap");
+			for(HitCircle circle : hitCircles){
+				System.out.println(circle);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		songStartTime = System.currentTimeMillis();
+		Resources.music.play();
+		System.out.println("Play Music!");
+		
 		this.gamePanel = gamePanel;
 		{/// Adding Game to System
 			updatePostList.add(gamePanel);// Add gamePanel's render system to render after the GameLoop (updatePostList)
@@ -47,6 +71,8 @@ public class GameLogic extends engine.game.Logic {
 
 //	private int counter = 3000;
 	
+	int spawnCounter = 0;
+	
 	@Override
 	protected void logicLoop(long frameTime) {
 		if(InputManager.isKeyActive(InputManager.KEY_ESC)){
@@ -54,11 +80,27 @@ public class GameLogic extends engine.game.Logic {
 			stopLogic();
 			return;
 		}
-		enemyTargetSpawnTimeCounter -= frameTime;
-		if(enemyTargetSpawnTimeCounter < 0){
-			enemyTargetSpawnTimeCounter = (int)ENEMY_TARGET_SPAWN_TIME.random();
-			addTarget(new EnemyTarget(5));
+//		enemyTargetSpawnTimeCounter -= frameTime;
+//		if(enemyTargetSpawnTimeCounter < 0){
+//			enemyTargetSpawnTimeCounter = (int)ENEMY_TARGET_SPAWN_TIME.random();
+//			addTarget(new EnemyTarget(5));
+//		}
+		
+		long currentSongTime = System.currentTimeMillis() - songStartTime;
+		if(hitCircles != null){
+			while(spawnCounter <= hitCircles.size()){
+				HitCircle currentHitCircle = hitCircles.get(spawnCounter);
+				if(currentHitCircle.time < currentSongTime){
+					addTarget(new EnemyTarget(
+							1, 
+							Range.normalize(currentHitCircle.x, new Range(0, 512), Resources.gameField), 
+							Range.normalize(currentHitCircle.y, new Range(0, 512), Resources.gameField)));
+					spawnCounter++;
+				}
+				else break;
+			}
 		}
+		
 		for(Bullet bullet : bulletList){
 			for(Target target : targetList){
 				if(bullet.isHitting(target)){
@@ -109,6 +151,7 @@ public class GameLogic extends engine.game.Logic {
 
 	@Override
 	protected void onExitLogic() {
+		Resources.music.stop();
 		gamePanel.getRenderLayers().remove(this.gameLayer);
 	}
 	

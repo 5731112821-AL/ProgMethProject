@@ -1,5 +1,7 @@
 package flyerGame.EngineExtension;
 
+import java.applet.Applet;
+import java.applet.AudioClip;
 import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 
@@ -37,12 +39,14 @@ public class Resources {
 	
 	public static BufferedImage ImgButton;
 	public static BufferedImage StartButton;
+	public static AudioClip music;
 	
 	static{
 		try {
 			ClassLoader loader = Resources.class.getClassLoader();
 			ImgButton = ImageIO.read(loader.getResource("flyerGame/res/button.png"));
 			StartButton = ImageIO.read(loader.getResource("flyerGame/res/start_button.png"));
+			music = Applet.newAudioClip((loader.getResource("flyerGame/res/Lunatic_Tears_Tatsh_Remix_.wav")).toURI().toURL());
 			System.out.println("Resouces Sucessfully loaded YAY !!!");
 		} catch (Exception e) {
 			ImgButton = null;

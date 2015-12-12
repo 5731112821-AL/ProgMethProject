@@ -11,7 +11,7 @@ public abstract class Logic {
 	protected abstract void objectDestroyReport(GameObject2D gameObject2D);
 	
 	private long oldTime;
-	private int sleepTime;
+	private int targetFrameTime;
 	private boolean logicIsRunning = false;
 
 	private ArrayList<Renderable> renderList;
@@ -77,7 +77,7 @@ public abstract class Logic {
 		gameObjects			= new ArrayList<>();
 		gameObjectsToAdd 	= new ArrayList<>();
 		gameObjectsToRemove = new ArrayList<>();
-		sleepTime = 1000/maxFPS;
+		targetFrameTime = 1000/maxFPS;
 	}
 
 
@@ -129,6 +129,8 @@ public abstract class Logic {
 		oldTime = System.currentTimeMillis();
 		while(logicIsRunning){
 			update();
+			long timeTaken = System.currentTimeMillis() - oldTime;
+			long sleepTime = (targetFrameTime - timeTaken < 0) ? 0 : targetFrameTime - timeTaken;
 			try{
 				Thread.sleep(sleepTime);
 			}catch(InterruptedException e){
@@ -143,11 +145,11 @@ public abstract class Logic {
 	}
 	
 	protected int getSleepTime() {
-		return sleepTime;
+		return targetFrameTime;
 	}
 	protected void setSleepTime(int sleepTime) {
 		if(sleepTime < 0)
 			sleepTime = 0;
-		this.sleepTime = sleepTime;
+		this.targetFrameTime = sleepTime;
 	}
 }

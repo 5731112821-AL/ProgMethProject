@@ -10,8 +10,13 @@ public class EnemyTarget extends Target{
 	
 	static float speedY = 0.01f;
 
+	
 	public EnemyTarget(int healthPoint) {
-		super(healthPoint, Resources.screenField.random(), -2f, Resources.screenFieldEx, Resources.screenFieldEx);
+		this(healthPoint, Resources.screenField.random(), -2f);
+	}
+
+	public EnemyTarget(int healthPoint, float x, float y) {
+		super(healthPoint, x, y, Resources.screenFieldEx, Resources.screenFieldEx);
 	}
 	
 	@Override
