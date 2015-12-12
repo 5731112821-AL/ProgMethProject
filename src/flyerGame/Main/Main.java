@@ -1,5 +1,7 @@
 package flyerGame.Main;
 
+import java.awt.event.WindowEvent;
+
 import javax.swing.JFrame;
 
 import engine.game.InputManager;
@@ -32,6 +34,8 @@ public class Main {
 
 		gamePanel.requestFocus(); 					// Focus on GamePanel to allow KeyInput to work
 													// This line MUST be after frame.setVisible(true);
-		systemLogic.runGame();
+		systemLogic.runLogic();						// This methond blocks the cpu until the game is exited
+		
+		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 	}
 }

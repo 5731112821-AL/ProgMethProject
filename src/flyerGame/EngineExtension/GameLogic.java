@@ -50,9 +50,8 @@ public class GameLogic extends engine.game.Logic {
 	@Override
 	protected void logicLoop(long frameTime) {
 		if(InputManager.isKeyActive(InputManager.KEY_ESC)){
-			System.out.println("Atemp Exit");
-			stopGameLoop();
-			
+			InputManager.forceFlushKeys();
+			stopLogic();
 			return;
 		}
 		enemyTargetSpawnTimeCounter -= frameTime;
@@ -110,7 +109,6 @@ public class GameLogic extends engine.game.Logic {
 
 	@Override
 	protected void onExitLogic() {
-		System.out.println("Attemp exit");
 		gamePanel.getRenderLayers().remove(this.gameLayer);
 	}
 	

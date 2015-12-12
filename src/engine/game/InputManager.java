@@ -32,6 +32,15 @@ public class InputManager {
 	
 	private static boolean[] keyActive = new boolean[256];
 
+	/**
+	 * Resets all the keys to be inactive
+	 */
+	public static void forceFlushKeys() {
+		for(int c=0; c<keyActive.length; c++){
+			keyActive[c] = false;
+		}
+	}
+	
 	public static boolean isKeyActive(int key) {
 		synchronized (InputManager.keyActive) {
 			return InputManager.keyActive[key];	

@@ -124,7 +124,7 @@ public abstract class Logic {
 		
 	}
 	
-	public void runGame() {
+	public void runLogic() {
 		logicIsRunning = true;
 		oldTime = System.currentTimeMillis();
 		while(logicIsRunning){
@@ -138,7 +138,7 @@ public abstract class Logic {
 		onExitLogic();
 	}
 	
-	protected void stopGameLoop(){
+	protected void stopLogic(){
 		logicIsRunning = false;
 	}
 	

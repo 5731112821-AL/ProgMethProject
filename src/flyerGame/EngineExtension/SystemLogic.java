@@ -61,19 +61,21 @@ public class SystemLogic extends engine.game.Logic {
 
 	@Override
 	protected void logicLoop(long frameTime) {
-//		System.out.println("Looping");
-		if(gameRunning){
+		if(!gameRunning){
+			if(InputManager.isKeyActive(InputManager.KEY_ESC)){
+				stopLogic();
+			}
+			
+		}else{
 			disableLogic();
-			gameLogic.runGame();
+			gameLogic.runLogic();
 			gameRunning=false;
 			enableLogic();
 		}
-		
 	}
 
 	@Override
 	protected void onExitLogic() {
-		
 		
 	}
 
@@ -86,10 +88,18 @@ public class SystemLogic extends engine.game.Logic {
 		for(ScreenMouseListener screenMouseListener:screenMouseListeners)
 			screenMouseListener.setActive(set);
 	}
+	/**
+	 * Temporary disable the Logic
+	 * Note: does not Block the Thread
+	 */
 	private void disableLogic(){
 		uiLayer.setVisible(false);
 		setActiveAllScreenMouseListener(false);
 	}
+	
+	/**
+	 * Get the logic back up and running 
+	 */
 	private void enableLogic(){
 		uiLayer.setVisible(true);
 		setActiveAllScreenMouseListener(true);
