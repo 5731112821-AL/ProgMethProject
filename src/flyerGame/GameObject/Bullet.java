@@ -29,7 +29,7 @@ public class Bullet extends Target implements HitableBox2D, Moving2D {
 	}
 
 	public Bullet(Class<? extends Target> parent, int hitPoint, float x, float y, float speedX, float speedY, Range hbX, Range hbY) {
-		super(hitPoint, x, y, Resources.screenFieldEx, Resources.screenFieldEx);
+		super(hitPoint, x, y, Resources.screenFieldExX, Resources.screenFieldExY);
 		this.parent = parent;
 		this.speedX = speedX;
 		this.speedY = speedY;

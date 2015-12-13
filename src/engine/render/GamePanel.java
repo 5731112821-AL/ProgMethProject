@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 import javax.swing.JComponent;
@@ -18,6 +20,9 @@ import engine.game.Logic.Updatable;
  */
 @SuppressWarnings("serial")
 public class GamePanel extends JComponent implements Updatable{
+	
+	private AffineTransform transform = new AffineTransform();
+	
 	private Dimension dimension;
 	private ArrayList<RenderLayer> renderLayers;
 	
@@ -25,35 +30,40 @@ public class GamePanel extends JComponent implements Updatable{
 	 * renderLayers - is initialized to an empty list
 	 * @param dimension - Dimension of the GamePanel
 	 */
-	public GamePanel(Dimension dimension) {
-		this(dimension, new ArrayList<RenderLayer>());
+	public GamePanel(Dimension dimension, float scale) {
+		this(dimension, new ArrayList<RenderLayer>(), scale);
 	}
 	/**
 	 * @param dimension - Dimension of the GamePanel
 	 * @param renderLayers - Pass in null if you want to set it later with setRenderLayers
 	 */
-	public GamePanel(Dimension dimension, ArrayList<RenderLayer> renderLayers) {
+	public GamePanel(Dimension dimension, ArrayList<RenderLayer> renderLayers, float scale) {
 		super();
 		this.dimension = dimension;
 		this.setRenderLayers(renderLayers);
 		this.setPreferredSize(dimension);
+		transform.scale(scale, scale);
 	}
-
-
-
+	
 	@Override
 	protected void paintComponent(Graphics g) { 
 		super.paintComponent(g);
 		
 		Graphics2D g2d = (Graphics2D)g;
+
+	    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	    g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
 		g2d.setBackground(Color.BLACK);
 		g2d.fillRect(0, 0, dimension.width, dimension.height);
+		
+		g2d.setTransform(this.transform);
+		
 		if(renderLayers != null){
 			for (int i = 0; i < renderLayers.size(); i++) {
 				renderLayers.get(i).renderAll(g);
 			}
 		}
-		
 	}
 	
 	public ArrayList<RenderLayer> getRenderLayers() {

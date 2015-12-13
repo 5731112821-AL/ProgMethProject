@@ -8,6 +8,7 @@ import engine.game.InputManager;
 import engine.utilities.Range;
 import flyerGame.EngineExtension.GameLogic;
 import flyerGame.EngineExtension.Resources;
+import flyerGame.EngineExtension.Resources.Axis;
 import flyerGame.Factory.BulletFactory;
 
 public class Player extends FiringTarget{
@@ -54,8 +55,9 @@ public class Player extends FiringTarget{
 	public void update(long frameTime) {
 		Point p = InputManager.getMouseLocation();
 		if(p!=null){
-			this.setX(Resources.normalizeToGame(p.x));
-			this.setY(Resources.normalizeToGame(p.y));
+//			System.out.println(p);
+			this.setX(Range.normalize(p.x, Resources.trueScreenFieldX, Resources.screenFieldX));
+			this.setY(Range.normalize(p.y, Resources.trueScreenFieldY, Resources.screenFieldY));
 		}
 //		if(InputManager.isKeyActive(InputManager.LeftArrowKey)){
 //			setX(getX() - frameTime/200f);
@@ -71,7 +73,7 @@ public class Player extends FiringTarget{
 //		}
 //		System.out.println("X "+getX());
 		
-		if(InputManager.isKeyActive(32))
+		if(InputManager.isKeyActive(InputManager.KEY_SPACEBAR) || InputManager.isMouseHoldDown())
 			fire(frameTime, bulletFactory);
 	}
 

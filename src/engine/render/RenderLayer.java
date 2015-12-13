@@ -5,7 +5,9 @@ import java.util.ArrayList;
 
 public class RenderLayer{
 	public interface Renderable {
-		public void render(Graphics g);
+		public default void render(Graphics g){
+			System.out.println(Thread.currentThread().getName());
+		}
 	}
 	
 	public RenderLayer() {

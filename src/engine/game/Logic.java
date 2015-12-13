@@ -20,8 +20,8 @@ public abstract class Logic {
 	public ArrayList<Updatable> updatePostList;
 
 	private ArrayList<GameObject2D> gameObjects;
-	private ArrayList<GameObject2D> gameObjectsToAdd;
-	private ArrayList<GameObject2D> gameObjectsToRemove;
+	private ArrayList<Object> objectsToAdd;
+	private ArrayList<Object> objectsToRemove;
 	
 	public interface Updatable{
 		public abstract void update(long frameTime);
@@ -32,28 +32,30 @@ public abstract class Logic {
 		return renderList;
 	}
 
-	public void addGameObjectNextTick(GameObject2D obj) {
-		gameObjectsToAdd.add(obj);
+	public void addObjectNextTick(Object obj) {
+		objectsToAdd.add(obj);
 	}
-	public void removeGameObjectNextTick(GameObject2D obj) {
-		gameObjectsToRemove.add(obj);
+	public void removeObjectNextTick(Object obj) {
+		objectsToRemove.add(obj);
 	}
 	
-	private void addGameObject(GameObject2D obj){
+	private void addObject(Object obj){
 //		System.out.println("Add Game Object " + obj);
 		if(obj instanceof Renderable)
 			renderList.add((Renderable) obj);
 		if(obj instanceof Updatable)
 			updatePreList.add((Updatable) obj);
-		gameObjects.add(obj);
+		if(obj instanceof GameObject2D)
+			gameObjects.add((GameObject2D) obj);
 	}
-	private void removeGameObject(GameObject2D obj){
+	private void removeObject(Object obj){
 //		System.out.println("Remove Game Object " + obj);
 		if(obj instanceof Renderable)
 			renderList.remove((Renderable) obj);
 		if(obj instanceof Updatable)
 			updatePreList.remove((Updatable) obj);
-		gameObjects.remove(obj);
+		if(obj instanceof GameObject2D)
+			gameObjects.remove((GameObject2D)obj);
 	}
 	
 	private void updateGameObjectList(){
@@ -62,7 +64,7 @@ public abstract class Logic {
 			GameObject2D obj = gameObjects.get(c);
 			if(obj.isDestroy()){
 				objectDestroyReport(obj);
-				removeGameObject(obj);
+				removeObject(obj);
 			}
 		}
 	}
@@ -75,13 +77,13 @@ public abstract class Logic {
 		updatePreList		= new ArrayList<>();
 		updatePostList		= new ArrayList<>(); 
 		gameObjects			= new ArrayList<>();
-		gameObjectsToAdd 	= new ArrayList<>();
-		gameObjectsToRemove = new ArrayList<>();
+		objectsToAdd 	= new ArrayList<>();
+		objectsToRemove = new ArrayList<>();
 		targetFrameTime = 1000/maxFPS;
 	}
 
-
-//	private int counter = 0;
+	/// For FPS
+	private int counter = 0;
 	
 	public void update() {
 //		System.out.println("RUNNING");
@@ -93,22 +95,23 @@ public abstract class Logic {
 		
 		oldTime = newTime;
 		
-//		if(++counter == 10){
-//			counter = 0;
-////			System.out.println("Frame Time : "+frameTime);
-//			System.out.println("FPS :"+1000/frameTime);
-//		}
+		/// For FPS
+		if(++counter == 10){
+			counter = 0;
+//			System.out.println("Frame Time : "+frameTime);
+			System.out.println("FPS :"+1000/frameTime);
+		}
 
 		InputManager.executeAllMouseEvent();
 		// Check list for destroyed objects
 		updateGameObjectList();
 		// Add and Remove pending Objects
-		for(GameObject2D obj: gameObjectsToAdd)
-			addGameObject(obj);
-		gameObjectsToAdd.clear();
-		for(GameObject2D obj: gameObjectsToRemove)
-			removeGameObject(obj);
-		gameObjectsToRemove.clear();
+		for(Object obj: objectsToAdd)
+			addObject(obj);
+		objectsToAdd.clear();
+		for(Object obj: objectsToRemove)
+			removeObject(obj);
+		objectsToRemove.clear();
 		
 		
 		for(Updatable updatable : updatePreList)
@@ -124,6 +127,8 @@ public abstract class Logic {
 		
 	}
 	
+	long minSleepTime = 0;
+	
 	public void runLogic() {
 		logicIsRunning = true;
 		oldTime = System.currentTimeMillis();
@@ -131,6 +136,12 @@ public abstract class Logic {
 			update();
 			long timeTaken = System.currentTimeMillis() - oldTime;
 			long sleepTime = (targetFrameTime - timeTaken < 0) ? 0 : targetFrameTime - timeTaken;
+			/// For FPS
+			minSleepTime = Math.min(minSleepTime, sleepTime);
+			if(counter == 0){
+				System.out.println("mSleep Time : "+sleepTime+"/"+targetFrameTime);
+				minSleepTime = sleepTime;
+			}
 			try{
 				Thread.sleep(sleepTime);
 			}catch(InterruptedException e){

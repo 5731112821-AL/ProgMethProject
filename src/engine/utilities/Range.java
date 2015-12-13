@@ -22,6 +22,11 @@ public class Range{
 	public static float normalize(float value, Range from, Range to){
 		value = from.bound(value);
 		return to.min + ((value - from.min) *to.size() / from.size());
+		// TODO recheck formular
+	}
+	
+	public static float map(float value, Range from, Range to){
+		return value *to.max / from.max;
 	}
 	
 	public static Range offset(Range o, float offsetValue){

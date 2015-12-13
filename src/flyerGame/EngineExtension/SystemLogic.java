@@ -1,15 +1,18 @@
 package flyerGame.EngineExtension;
 
+import java.applet.AudioClip;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
+import osuUtilities.OsuBeatmap;
 import engine.game.GameObject2D;
 import engine.game.InputManager;
-import engine.game.InputManager.MiniMouseListener;
 import engine.game.InputManager.ScreenMouseListener;
 import engine.render.GamePanel;
 import engine.render.RenderLayer;
 import engine.ui.Button;
+import flyerGame.Main.SongIndexer.Song;
 
 public class SystemLogic extends engine.game.Logic {
 	
@@ -19,7 +22,6 @@ public class SystemLogic extends engine.game.Logic {
 	private GamePanel gamePanel;
 	private boolean gameRunning;
 	private GameLogic gameLogic;
-	private ArrayList<ScreenMouseListener> screenMouseListeners;
 	
 	public SystemLogic(GamePanel gamePanel) {
 		super(TARGET_FPS);
@@ -29,25 +31,45 @@ public class SystemLogic extends engine.game.Logic {
 		{/// Adding Game to System
 			updatePostList.add(gamePanel);// Add gamePanel's render system to render after the GameLoop (updatePostList)
 		}
-		Button startButton = new Button(Resources.StartButton, 300, 300, new MiniMouseListener() {
+		initUI();
+	}
+
+
+	private ArrayList<ScreenMouseListener> screenMouseListeners;
+	private void initUI() {
+		Button startButton = new Button(Resources.StartButton, 300, 300, new MouseListener() {
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
+				System.out.println("start click");
+				Resources.soundFxStart.play();
+				Song song = Resources.songs.get(0);
+				String folderPath = song.folderPath;
+				OsuBeatmap beatmap = Resources.loadOsuBeatMap(folderPath+song.beatmapNames.get(song.beatmapNames.size()-1));
+				AudioClip mapAudioClip = Resources.loadBeatmapAudioClip(folderPath+song.songName);
+				gameLogic = new GameLogic(gamePanel, mapAudioClip, beatmap.hitCircles);
+				gameRunning = true;
 			}
 			
 			@Override
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
-				
 			}
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("start click");
-				gameLogic = new GameLogic(gamePanel);
-				gameRunning=true;
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				System.out.println("Mouse Entered start");
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				System.out.println("Mouse Exited start");
 			}
 		});
 		screenMouseListeners.add(startButton.getScreenMouseListener());
@@ -58,7 +80,7 @@ public class SystemLogic extends engine.game.Logic {
 		uiLayer.addRenderable(startButton);
 		this.gamePanel.getRenderLayers().add(uiLayer);
 	}
-
+	
 	@Override
 	protected void logicLoop(long frameTime) {
 		if(!gameRunning){

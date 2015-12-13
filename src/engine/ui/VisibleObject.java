@@ -55,7 +55,6 @@ public class VisibleObject implements Renderable {
 		if(this.isVisible){
 			Graphics2D g2d = (Graphics2D)g;
 			g2d.drawImage(img, null, screenX, screenY);
-//			System.out.println("VisibleObj rendered");
 		}
 	}
 

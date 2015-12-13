@@ -4,19 +4,20 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-import engine.game.Logic.Updatable;
 import engine.game.GameObject2D;
+import engine.game.Logic.Updatable;
 import engine.render.RenderLayer.Renderable;
 import engine.utilities.HitableBox2D;
 import engine.utilities.Range;
 import flyerGame.EngineExtension.Resources;
+import flyerGame.EngineExtension.Resources.Axis;
 
 public abstract class Target extends GameObject2D implements HitableBox2D, Updatable, Renderable {
 	
 	private int healthPoint;
 
 	public Target(int health, float x, float y) {
-		this(health, x, y, Resources.screenField, Resources.screenField);
+		this(health, x, y, Resources.screenFieldX, Resources.screenFieldY);
 	}
 
 	public Target(int health, float x, float y, Range xRange, Range yRange) {
@@ -37,8 +38,8 @@ public abstract class Target extends GameObject2D implements HitableBox2D, Updat
 	
 	public void renderHitBox(Graphics g, Color color) {
 		int 
-			fromX = Resources.normalizeToScreen( (getX() + getHitBoxXRange().min) ),
-			fromY = Resources.normalizeToScreen( (getY() + getHitBoxYRange().min) );
+			fromX = (int) Range.map(getX() + getHitBoxXRange().min, Resources.screenFieldX, Resources.virtualScreenFieldX),
+			fromY = (int) Range.map(getY() + getHitBoxYRange().min, Resources.screenFieldY, Resources.virtualScreenFieldY);
 		
 		Graphics2D g2d = (Graphics2D)g;
 		
@@ -48,8 +49,8 @@ public abstract class Target extends GameObject2D implements HitableBox2D, Updat
 		g2d.drawRect(
 				fromX, 
 				fromY, 
-				Resources.normalizeToScreen(getHitBoxXRange().size()), 
-				Resources.normalizeToScreen(getHitBoxYRange().size()));
+				(int) Range.map(getHitBoxXRange().size(), Resources.screenFieldX, Resources.virtualScreenFieldX),
+				(int) Range.map(getHitBoxYRange().size(), Resources.screenFieldY, Resources.virtualScreenFieldY));
 	}
 	
 }

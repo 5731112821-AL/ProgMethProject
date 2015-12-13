@@ -8,15 +8,10 @@ import flyerGame.EngineExtension.Resources;
 
 public class EnemyTarget extends Target{
 	
-	static float speedY = 0.01f;
-
-	
-	public EnemyTarget(int healthPoint) {
-		this(healthPoint, Resources.screenField.random(), -2f);
-	}
+	static float speedY = 0.001f;
 
 	public EnemyTarget(int healthPoint, float x, float y) {
-		super(healthPoint, x, y, Resources.screenFieldEx, Resources.screenFieldEx);
+		super(healthPoint, x, y, Resources.screenFieldExX, Resources.screenFieldExY);
 	}
 	
 	@Override
@@ -31,7 +26,7 @@ public class EnemyTarget extends Target{
 
 	@Override
 	public void update(long frameTime) {
-		setY( getY() + speedY );
+		setY( getY() + speedY*frameTime );
 	}
 
 	@Override

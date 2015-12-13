@@ -15,7 +15,7 @@ public class Main {
 		
 		System.out.println("Game Start");
 		
-		GamePanel gamePanel = new GamePanel(Resources.screenDimension);
+		GamePanel gamePanel = new GamePanel(Resources.screenDimension, Resources.scale);
 		{/// Prepare Game Panel as Main Panel of JFrame
 			InputManager.addComponent(gamePanel); 	// Bound Input System to this Panel
 		}

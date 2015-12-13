@@ -1,16 +1,16 @@
 package flyerGame.EngineExtension;
 
-import java.io.File;
-import java.io.IOException;
+import java.applet.AudioClip;
 import java.util.ArrayList;
+import java.util.List;
 
-import osuUtilities.OsuBeatmap;
 import osuUtilities.OsuBeatmap.HitCircle;
 import engine.game.GameObject2D;
 import engine.game.InputManager;
 import engine.render.GamePanel;
 import engine.render.RenderLayer;
 import engine.utilities.Range;
+import flyerGame.EngineExtension.Resources.Axis;
 import flyerGame.GameObject.Bullet;
 import flyerGame.GameObject.EnemyTarget;
 import flyerGame.GameObject.Player;
@@ -20,58 +20,45 @@ public class GameLogic extends engine.game.Logic {
 
 	private static final int TARGET_FPS = 60;
 
-	Player player;
+	Player player = new Player(this);
 	
-	private ArrayList<Bullet> bulletList;
-	private ArrayList<Target> targetList; 
-	private GamePanel gamePanel;
-	private RenderLayer gameLayer;
+	private ArrayList<Bullet> bulletList = new ArrayList<Bullet>();
+	private ArrayList<Target> targetList = new ArrayList<Target>();
+	private RenderLayer gameLayer = new RenderLayer(getRenderList());;
 
-	private int enemyTargetSpawnTimeCounter;
-	private static final Range ENEMY_TARGET_SPAWN_TIME = new Range(1000, 3000);
+	// Need Constructor initialization
+	
+	private GamePanel gamePanel;
+	private List<HitCircle> hitCircles = null;
+	private AudioClip song = null;
 	private long songStartTime;
 	
-	private ArrayList<HitCircle> hitCircles = null;
-	
-	public GameLogic(GamePanel gamePanel) {
+	public GameLogic(GamePanel gamePanel, AudioClip song, List<HitCircle> hitCircles) {
 		super(TARGET_FPS);
 
-		try {
-			OsuBeatmap beatmap = new OsuBeatmap(new File("src/flyerGame/res/Tatsh - Lunatic Tears...(Tatsh Remix) (Suzully) [Hard].osu"));
-			hitCircles = beatmap.hitCircles;
-			System.out.println("loaded beatmap");
-			for(HitCircle circle : hitCircles){
-				System.out.println(circle);
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		songStartTime = System.currentTimeMillis();
-		Resources.music.play();
-		System.out.println("Play Music!");
-		
 		this.gamePanel = gamePanel;
+		this.hitCircles = hitCircles;
+		this.song = song;
 		{/// Adding Game to System
 			updatePostList.add(gamePanel);// Add gamePanel's render system to render after the GameLoop (updatePostList)
 		}
 		
-		gameLayer = new RenderLayer(getRenderList());
-		this.gamePanel.getRenderLayers().add(gameLayer);
+		gamePanel.getRenderLayers().add(gameLayer);
 		
-		bulletList = new ArrayList<>();
-		targetList = new ArrayList<>();
-		
-		player = new Player(this);
+		addObjectNextTick(new MovingBackground(Resources.gameBackground, 0, Range.map(-0.001f, Resources.screenFieldY, Resources.virtualScreenFieldY)));
 		addTarget(player);
-		
-		enemyTargetSpawnTimeCounter = (int)ENEMY_TARGET_SPAWN_TIME.random();
-	}
 
-//	private int counter = 3000;
+		// Do Last
+		songStartTime = System.currentTimeMillis();
+		if(this.song != null){
+			this.song.play();
+			System.out.println("Play Music!");
+		}else{
+			System.out.println("Song not found");
+		}
+	}
 	
-	int spawnCounter = 0;
+	int hitCircleCounter = 0;
 	
 	@Override
 	protected void logicLoop(long frameTime) {
@@ -80,22 +67,18 @@ public class GameLogic extends engine.game.Logic {
 			stopLogic();
 			return;
 		}
-//		enemyTargetSpawnTimeCounter -= frameTime;
-//		if(enemyTargetSpawnTimeCounter < 0){
-//			enemyTargetSpawnTimeCounter = (int)ENEMY_TARGET_SPAWN_TIME.random();
-//			addTarget(new EnemyTarget(5));
-//		}
 		
 		long currentSongTime = System.currentTimeMillis() - songStartTime;
 		if(hitCircles != null){
-			while(spawnCounter <= hitCircles.size()){
-				HitCircle currentHitCircle = hitCircles.get(spawnCounter);
+			while(hitCircleCounter < hitCircles.size()){
+				HitCircle currentHitCircle = hitCircles.get(hitCircleCounter);
 				if(currentHitCircle.time < currentSongTime){
+					Resources.soundFxDrum.play();
 					addTarget(new EnemyTarget(
 							1, 
-							Range.normalize(currentHitCircle.x, new Range(0, 512), Resources.gameField), 
-							Range.normalize(currentHitCircle.y, new Range(0, 512), Resources.gameField)));
-					spawnCounter++;
+							Range.normalize(currentHitCircle.x, new Range(0, 512), Resources.screenFieldX), 
+							Range.normalize(currentHitCircle.y, new Range(0, 512), Resources.screenFieldY)));
+					hitCircleCounter++;
 				}
 				else break;
 			}
@@ -110,20 +93,14 @@ public class GameLogic extends engine.game.Logic {
 				
 			}
 		}
-//		System.out.println("bulletList"+bulletList.size());
-//		System.out.println("targetList"+targetList.size());
-	}
-
-	public void addGameObject(GameObject2D obj) {
-		super.addGameObjectNextTick(obj);
 	}
 
 	@Override
 	protected void objectDestroyReport(GameObject2D gameObject2D) {
-		removeGameObjectFromLocal(gameObject2D);
+		removeObjectFromLocal(gameObject2D);
 	}
 	
-	private void removeGameObjectFromLocal(GameObject2D obj) {
+	private void removeObjectFromLocal(Object obj) {
 		if (obj instanceof Bullet) {
 			Bullet bullet = (Bullet) obj;
 			bulletList.remove(bullet);
@@ -134,24 +111,24 @@ public class GameLogic extends engine.game.Logic {
 		}
 	}
 	
-	public void removeGameObject(GameObject2D obj) {
-		super.removeGameObjectNextTick(obj);
-		removeGameObjectFromLocal(obj);
+	public void removeObject(Object obj) {
+		super.removeObjectNextTick(obj);
+		removeObjectFromLocal(obj);
 	}
 
 	public void addBullet(Bullet bullet){
-		addGameObjectNextTick(bullet);
+		addObjectNextTick(bullet);
 		bulletList.add(bullet);
 	}
 	
 	public void addTarget(Target target){
-		addGameObjectNextTick(target);
+		addObjectNextTick(target);
 		targetList.add(target);
 	}
 
 	@Override
 	protected void onExitLogic() {
-		Resources.music.stop();
+		this.song.stop();
 		gamePanel.getRenderLayers().remove(this.gameLayer);
 	}
 	
