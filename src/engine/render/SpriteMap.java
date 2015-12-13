@@ -2,26 +2,34 @@ package engine.render;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.awt.image.ColorModel;
 
-import engine.render.RenderLayer.Renderable;
+import flyerGame.engineExtension.Resources;
 
 public class SpriteMap {
 
 	private BufferedImage image;
-	private int colums, rows;
-	
+	private int colums, rows, height, width;
+
 	public SpriteMap(BufferedImage image, int colums, int rows) {
 		super();
 		this.image = image;
 		this.colums = colums;
 		this.rows = rows;
+		int 
+			height = image.getHeight(),
+			width = image.getWidth();
+		this.height = height/rows;
+		this.width = width/colums;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public int getWidth() {
+		return width;
 	}
 
 	public void render(Graphics g, int x, int y, AffineTransformOp affineTransformOp, int index) {
@@ -29,15 +37,10 @@ public class SpriteMap {
 	}
 
 	public void render(Graphics g, int x, int y, AffineTransformOp affineTransformOp, int indexX, int indexY) {
-		int 
-			height = image.getHeight(),
-			width = image.getWidth(),
-			spriteHeight = height/rows,
-			spriteWidth = width/colums;
-		indexX = indexX % rows;
-		indexY = indexY % colums;
+		indexX = indexX % colums;
+		indexY = indexY % rows;
 		Graphics2D g2 = (Graphics2D)g;
-		g2.drawImage(image.getSubimage(indexX*spriteWidth, indexY*spriteWidth, spriteWidth, spriteHeight), affineTransformOp, x, y);
+		g2.drawImage(image.getSubimage(indexX*this.width, indexY*this.height, this.width, this.height), affineTransformOp, x, y);
 	}
 
 }

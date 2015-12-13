@@ -9,26 +9,25 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import engine.utilities.Range;
-import flyerGame.EngineExtension.Resources;
+import flyerGame.engineExtension.Resources;
 
 public class InputManager {
 	private InputManager() {}
 	
 	private static final int STD_SLEEP_TIME = 20;
 
-	private static Component lastComponent = null;
+	private static Component latestComponent = null;
 	
 	public static void addComponent(Component comp){
 		comp.addKeyListener(keyListener);
 		comp.addMouseListener(mouseListener);
 		comp.addMouseMotionListener(mouseMotionListener);
-		lastComponent = comp;
+		latestComponent = comp;
 	}
 
 	// Keyboard
@@ -162,11 +161,11 @@ public class InputManager {
 						}
 					}
 					Point mousePoint = getMouseLocation();
-					if(lastMouseListener != null && lastMouseListener.isActive==true && lastMouseListener.boundX.inRange(mousePoint.x) && lastMouseListener.boundY.inRange(mousePoint.y)){
+					if(lastMouseListener != null && lastMouseListener == findMouseListenerAt(mousePoint.x, mousePoint.y)){
 						// Case the same obj is being hovered on
 					}else{
-						if(lastComponent != null){
-							MouseEvent e = new MouseEvent(lastComponent, 0, 0, 0, mousePoint.x, mousePoint.y, 0, 0, 0, false, 0);
+						if(latestComponent != null){
+							MouseEvent e = new MouseEvent(latestComponent, 0, 0, 0, mousePoint.x, mousePoint.y, 0, 0, 0, false, 0);
 //							System.out.println("lastMouseListener " + lastMouseListener);
 							if(lastMouseListener != null){
 								pendingMouseEvents.add(

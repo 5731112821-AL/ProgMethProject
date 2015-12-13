@@ -84,6 +84,7 @@ public abstract class Logic {
 
 	/// For FPS
 	private int counter = 0;
+	private static boolean showFPS = false;
 	
 	public void update() {
 //		System.out.println("RUNNING");
@@ -96,11 +97,12 @@ public abstract class Logic {
 		oldTime = newTime;
 		
 		/// For FPS
-		if(++counter == 10){
-			counter = 0;
-//			System.out.println("Frame Time : "+frameTime);
-			System.out.println("FPS :"+1000/frameTime);
-		}
+		if(showFPS)
+			if(++counter == 10){
+				counter = 0;
+				System.out.println("Frame Time : "+frameTime);
+				System.out.println("FPS :"+1000/frameTime);
+			}
 
 		InputManager.executeAllMouseEvent();
 		// Check list for destroyed objects
@@ -137,10 +139,12 @@ public abstract class Logic {
 			long timeTaken = System.currentTimeMillis() - oldTime;
 			long sleepTime = (targetFrameTime - timeTaken < 0) ? 0 : targetFrameTime - timeTaken;
 			/// For FPS
-			minSleepTime = Math.min(minSleepTime, sleepTime);
-			if(counter == 0){
-				System.out.println("mSleep Time : "+sleepTime+"/"+targetFrameTime);
-				minSleepTime = sleepTime;
+			if(showFPS){
+				minSleepTime = Math.min(minSleepTime, sleepTime);
+				if(counter == 0){
+					System.out.println("mSleep Time : "+sleepTime+"/"+targetFrameTime);
+					minSleepTime = sleepTime;
+				}
 			}
 			try{
 				Thread.sleep(sleepTime);

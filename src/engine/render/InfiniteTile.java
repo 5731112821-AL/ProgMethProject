@@ -2,7 +2,6 @@ package engine.render;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 public class InfiniteTile {

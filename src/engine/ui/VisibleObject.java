@@ -1,17 +1,22 @@
 package engine.ui;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import engine.render.RenderLayer.Renderable;
+import engine.render.SpriteMap;
 
 public class VisibleObject implements Renderable {
 	
-	private int screenX,screenY,width,height;
-	private BufferedImage img;
+	private int screenX,screenY,width,height,state = 0;
+	private SpriteMap spriteMap;
 	private boolean isVisible;
 	
+	public void setState(int state) {
+		System.out.println(state); //TODO
+		this.state = state;
+	}
+
 	public int getScreenX() {
 		return screenX;
 	}
@@ -29,20 +34,30 @@ public class VisibleObject implements Renderable {
 	}
 
 	public int getWidth() {
-		if(img != null)
-			return img.getWidth();
+		if(spriteMap != null)
+			return spriteMap.getWidth();
 		return width;
 	}
 
 	public int getHeight() {
-		if(img != null)
-			return img.getHeight();
+		if(spriteMap != null)
+			return spriteMap.getHeight();
 		return height;
 	}
 
-	public VisibleObject(BufferedImage img, int screenX, int screenY, int width, int height) {
+	public VisibleObject(BufferedImage bufferedImage, int screenX, int screenY, int width, int height) {
+		this(new SpriteMap(bufferedImage, 1, 1), screenX, screenY, width, height);
+	}
+	/**
+	 * @param spriteMap
+	 * @param screenX
+	 * @param screenY
+	 * @param width - is ignored if img is NOT null
+	 * @param height - is ignored if img is NOT null
+	 */
+	public VisibleObject(SpriteMap spriteMap, int screenX, int screenY, int width, int height) {
 		super();
-		this.img = img;
+		this.spriteMap = spriteMap;
 		this.width = width;
 		this.height = height;
 		this.screenX = screenX;
@@ -53,8 +68,7 @@ public class VisibleObject implements Renderable {
 	@Override
 	public void render(Graphics g) {
 		if(this.isVisible){
-			Graphics2D g2d = (Graphics2D)g;
-			g2d.drawImage(img, null, screenX, screenY);
+			spriteMap.render(g, screenX, screenY, null, state);
 		}
 	}
 

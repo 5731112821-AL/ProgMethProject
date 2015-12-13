@@ -7,3 +7,4 @@ TestJar.jar
 !/src/res
 *.wav
 *.mp3
+*.DS_Store
