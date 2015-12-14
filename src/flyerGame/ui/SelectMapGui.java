@@ -1,7 +1,6 @@
 package flyerGame.ui;
 
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.Map;
 
 import osuUtilities.OsuBeatmap;

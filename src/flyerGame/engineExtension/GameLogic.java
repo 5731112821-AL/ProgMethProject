@@ -1,8 +1,5 @@
 package flyerGame.engineExtension;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -198,9 +195,12 @@ public class GameLogic extends engine.game.Logic {
 	
 	private int combo = 0;
 	private int score = 0;
-	
+
 	public int getScore() {
 		return score;
+	}
+	public int getCombo() {
+		return combo;
 	}
 
 	private void hitTarget(){

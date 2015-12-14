@@ -1,6 +1,5 @@
 package engine.ui;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
@@ -13,13 +12,13 @@ import engine.render.RenderLayer.Renderable;
 public class ScaledImage implements Renderable {
 	
 	private BufferedImage image;
-	private int x, y, width, height;
+	private int x, y, /*width,*/ height;
 
 	public ScaledImage(BufferedImage image, int x, int y, int width, int height) {
 		super();
 		this.x = x;
 		this.y = y;
-		this.width = width;
+//		this.width = width;
 		this.height = height;
 		setImage(image);
 	}

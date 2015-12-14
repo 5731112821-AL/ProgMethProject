@@ -1,8 +1,6 @@
 package flyerGame.engineExtension;
 
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 
 import engine.game.Logic.Updatable;
 import engine.render.InfiniteTile;
@@ -36,7 +34,7 @@ public class MovingBackground implements Renderable, Updatable {
 
 	@Override
 	public void render(Graphics g) {
-		Graphics2D g2d = (Graphics2D)g;
+//		Graphics2D g2d = (Graphics2D)g;
 //		AffineTransform transform = g2d.getTransform();
 //		g2d.setTransform(new AffineTransform());
 		infiniteTile.draw(g, (int)x, (int)y, Resources.virtualScreenWidth, Resources.virtualScreenHeight);

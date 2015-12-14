@@ -35,20 +35,29 @@ public class DynamicUiLabel implements Renderable {
 		this.color = color;
 	}
 	
+	protected Font getFont() {
+		return this.font;
+	}
+	
+	protected void stringReport(String str) {
+	}
+	
 	@Override
 	public void render(Graphics g) {
 		Graphics2D g2d = (Graphics2D)g;
-		g2d.setColor(this.color);
-		g2d.setFont(this.font);
-		g2d.setTransform(Resources.scaledTransform);
 		String str = getString.getString();
+		stringReport(str);
+		g2d.setColor(this.color);
+		Font font = getFont();
+		g2d.setFont(font);
+		g2d.setTransform(Resources.scaledTransform);
 		if(align == Align.left){
 			g2d.drawString(str, x, y);
 		}
 		else{
-			FontMetrics metrics = g.getFontMetrics(this.font);
+			FontMetrics metrics = g.getFontMetrics(font);
 			int adv = metrics.stringWidth(str);
-			g2d.drawString(str, x-adv, y+metrics.getHeight());
+			g2d.drawString(str, x-adv, y);
 		}
 	}
 

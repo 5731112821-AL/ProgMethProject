@@ -2,7 +2,6 @@ package flyerGame.ui;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.sql.BatchUpdateException;
 import java.util.ArrayList;
 
 import engine.ui.Button;
@@ -16,7 +15,7 @@ public class SettingGui extends Gui {
 	
 	private Button backButton;
 	
-	private ArrayList<UiLabel> uiLabels = new ArrayList<UiLabel>();
+	private ArrayList<UiLabel> uiLabels = new ArrayList<UiLabel>(); // TODO
 
 	public SettingGui(SystemLogic systemLogic) {
 		int offset = Resources.globalOffset;

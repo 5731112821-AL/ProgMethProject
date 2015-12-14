@@ -5,8 +5,6 @@ import java.awt.Graphics2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
-import flyerGame.engineExtension.Resources;
-
 public class SpriteMap {
 
 	private BufferedImage image;

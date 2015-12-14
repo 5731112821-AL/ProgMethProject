@@ -1,6 +1,5 @@
 package flyerGame.engineExtension;
 
-import java.awt.Dimension;
 import java.util.List;
 
 import osuUtilities.OsuBeatmap;
@@ -8,7 +7,6 @@ import engine.game.GameObject2D;
 import engine.game.InputManager;
 import engine.render.GamePanel;
 import engine.render.RenderLayer;
-import flyerGame.main.Main;
 import flyerGame.main.SongIndexer.Song;
 import flyerGame.ui.CreditsGui;
 import flyerGame.ui.Gui;

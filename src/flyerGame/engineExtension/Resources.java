@@ -5,14 +5,11 @@ import java.applet.AudioClip;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.GraphicsEnvironment;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -23,12 +20,11 @@ import osuUtilities.OsuBeatmap;
 import engine.render.InfiniteTile;
 import engine.render.SpriteMap;
 import engine.utilities.Range;
-import flyerGame.main.SongIndexer;
 import flyerGame.main.SongIndexer.Song;
 
 public class Resources {
 	
-	public static final boolean debugMode = true;
+	public static final boolean debugMode = false;
 	
 	private Resources() {
 	}
