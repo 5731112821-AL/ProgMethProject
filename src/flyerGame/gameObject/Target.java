@@ -16,7 +16,7 @@ public abstract class Target extends GameObject2D implements HitableBox2D, Updat
 	private int healthPoint;
 
 	public Target(int health, float x, float y) {
-		this(health, x, y, Resources.gameFieldX, Resources.gameFieldY);
+		this(health, x, y, null, null);
 	}
 
 	public Target(int health, float x, float y, Range xRange, Range yRange) {
@@ -34,6 +34,28 @@ public abstract class Target extends GameObject2D implements HitableBox2D, Updat
 		if(healthPoint <= 0)
 			this.destory();
 	}
+	
+	@Override
+	public void setX(float x) {
+		Range xRange = getXRange();
+		if(xRange != null && xRange.inRange(x) == false){
+			leftTheScreen();
+			destory();
+		}
+		super.setX(x);
+	}
+	
+	@Override
+	public void setY(float y) {
+		Range yRange = getYRange();
+		if(yRange != null && yRange.inRange(y) == false){
+			leftTheScreen();
+			destory();
+		}
+		super.setY(y);
+	}
+	
+	protected void leftTheScreen() {}
 	
 	public void renderHitBox(Graphics g, Color color) {
 		int 

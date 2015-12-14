@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
+import flyerGame.engineExtension.Resources;
+
 public class SpriteMap {
 
 	private BufferedImage image;
@@ -31,14 +33,30 @@ public class SpriteMap {
 	}
 
 	public void render(Graphics g, int x, int y, AffineTransformOp affineTransformOp, int index) {
-		render(g, x, y, affineTransformOp, index, index / colums);
+		render(g, x, y, affineTransformOp, index, false);
+	}
+
+	public void render(Graphics g, int x, int y, AffineTransformOp affineTransformOp, int index, boolean center) {
+		if(index < 0){
+			index = 0;
+			System.out.println("Alert negative index input for SpriteMap");
+		}
+		render(g, x, y, affineTransformOp, index, index / colums, center);
 	}
 
 	public void render(Graphics g, int x, int y, AffineTransformOp affineTransformOp, int indexX, int indexY) {
+		render(g, x, y, affineTransformOp, indexX, indexY, false);
+	}
+	
+	public void render(Graphics g, int x, int y, AffineTransformOp affineTransformOp, int indexX, int indexY, boolean center) {
 		indexX = indexX % colums;
 		indexY = indexY % rows;
 		Graphics2D g2 = (Graphics2D)g;
-		g2.drawImage(image.getSubimage(indexX*this.width, indexY*this.height, this.width, this.height), affineTransformOp, x, y);
+		BufferedImage sprite = image.getSubimage(indexX*this.width, indexY*this.height, this.width, this.height);
+		if(center)
+			g2.drawImage(sprite, affineTransformOp, x-width/2, y-height/2);
+		else
+			g2.drawImage(sprite, affineTransformOp, x, y);
 	}
 
 }

@@ -5,8 +5,6 @@ public class Range{
 	
 	public Range(float min, float max) {
 		super();
-		if(max < min)
-			max = min;
 		this.min = min;
 		this.max = max;
 	}

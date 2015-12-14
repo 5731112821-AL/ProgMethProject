@@ -2,10 +2,12 @@ package flyerGame.engineExtension;
 
 import java.applet.Applet;
 import java.applet.AudioClip;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,9 +27,11 @@ import flyerGame.main.SongIndexer;
 import flyerGame.main.SongIndexer.Song;
 
 public class Resources {
+	
+	public static final boolean debugMode = true;
+	
 	private Resources() {
 	}
-
 
 	public static int
 		ratioHeight, ratioWidth;
@@ -44,6 +48,8 @@ public class Resources {
 			globalOffset;
 	public static float
 			scale;
+	public static AffineTransform
+			scaledTransform;
 
 	public static final Range 
 			gameFieldX = new Range(0, 12),
@@ -59,9 +65,17 @@ public class Resources {
 	public static Dimension
 			screenDimension;
 
-	static{
+	private static float 
+		selectMapStandardFontSize, selectMapLargeFontSize,
+		settingStandardFontSize, scoreFontSize;
+
+	static{// TODO Set here
 		ratioWidth = 16; ratioHeight = 9; 
-		screenHeight = 600;
+		screenHeight = 768;
+		selectMapStandardFontSize = 25f;
+		selectMapLargeFontSize = 40f;
+		settingStandardFontSize = 40f;
+		scoreFontSize = 60f;
 		recalculateScreenProperties();
 		
 		System.out.println("virtualScreenWidth " + virtualScreenWidth);
@@ -96,6 +110,8 @@ public class Resources {
 		globalOffset = (virtualScreenWidth-1920)/2;
 		
 		scale = (float)screenHeight/virtualScreenHeight;
+		scaledTransform = new AffineTransform();
+		scaledTransform.scale(scale, scale);
 
 		gameFieldExX = new Range(gameFieldX.min - 1, gameFieldX.max + 1);
 		gameFieldExY = new Range(gameFieldY.min - 1,gameFieldY.max + 1);
@@ -131,7 +147,8 @@ public class Resources {
 	public static InfiniteTile gameBackground;
 	public static SpriteMap backButton;
 
-	public static Font standardFont;
+	public static Font selectMapStandardFont, selectMapLargeFont, settingStandardFont, scoreFont;
+	public static Color fontColor = new Color(246, 184, 152);
 
 	static {
 		// Load images and SoundFx
@@ -166,13 +183,40 @@ public class Resources {
 
 		// Load Font
 		try {
-			standardFont = Font
-					.createFont(
-							Font.TRUETYPE_FONT,
-							loader.getResourceAsStream("res/fonts/NEON CLUB MUSIC.otf"));
+			Font neon = Font.createFont(Font.TRUETYPE_FONT, loader.getResourceAsStream("res/fonts/NEON CLUB MUSIC.otf"));
+			Font neonBold = Font.createFont(Font.TRUETYPE_FONT, loader.getResourceAsStream("res/fonts/NEON CLUB MUSIC_bold.otf"));
+			selectMapStandardFont = neonBold.deriveFont(Font.BOLD, selectMapStandardFontSize);
+			selectMapLargeFont = neon.deriveFont(selectMapLargeFontSize);
+			settingStandardFont = neonBold.deriveFont(settingStandardFontSize);
+			scoreFont = neonBold.deriveFont(scoreFontSize);
 			System.out.println("Font Sucessfully loaded YAY !!!");
 		} catch (Exception e) {
 			System.out.println("Font Failed to load !!!");
+			e.printStackTrace();
+		}
+	}
+	
+	private static SpriteMap loadSpriteMap(String filePath, int columns, int rows) throws IOException{
+		return new SpriteMap(ImageIO.read(loader.getResource(filePath)), columns, rows);
+	}
+
+	public static SpriteMap gameEnemySpriteMap, closeButton;
+	public static BufferedImage playerSprite, raySprite, healthbar;
+	public static float gameSpeed = 0.001f;
+
+	static{
+		try{
+			System.out.print("Loading Game Assets data...");
+			String folderPath = "res/images/gamepanel/";
+			gameEnemySpriteMap = loadSpriteMap(spriteFolderPath+"enemy_sprite.png", 20, 1);
+			closeButton = loadSpriteMap(spriteFolderPath+"x_sprite.png", 3, 1);
+			playerSprite = ImageIO.read(loader.getResource(folderPath + "player.png"));
+			raySprite = ImageIO.read(loader.getResource(folderPath + "ray.png"));
+			healthbar = ImageIO.read(loader.getResource(folderPath + "healthbar.png"));
+			System.out.println("Sucess!!!");
+		} catch ( IOException e ) {
+			gameEnemySpriteMap = null;
+			System.out.println("Failed");
 			e.printStackTrace();
 		}
 	}
@@ -321,7 +365,7 @@ public class Resources {
 	public static void stop(Song song) {
 		Resources.loadBeatmapAudioClip(song.folderPath + song.songName).stop();
 	}
-
+	
 	public static BufferedImage loadBeatmapImage(Song song) {
 		return loadBeatmapImage(song, loadOsuBeatmap(song, 0));
 	}
@@ -333,7 +377,7 @@ public class Resources {
 				+ beatmap.data.get("Events").get("background"));
 	}
 
-	public static BufferedImage loadBeatmapImage(String filePath) {
+	public static synchronized BufferedImage loadBeatmapImage(String filePath) {
 		BufferedImage image = beatmapImageCache.get(filePath);
 		if (image == null) {
 			try {
@@ -352,7 +396,7 @@ public class Resources {
 		return image;
 	}
 
-	public static AudioClip loadBeatmapAudioClip(String filePath) {
+	public static synchronized AudioClip loadBeatmapAudioClip(String filePath) {
 		// System.out.println("loadBeatmapAudioClip " + filePath);
 		AudioClip beatmapAC = beatmapAudioClipCache.get(filePath);
 		if (beatmapAC == null) {
@@ -377,7 +421,7 @@ public class Resources {
 		return loadOsuBeatmap(song.folderPath + song.beatmapNames.get(index));
 	}
 
-	public static OsuBeatmap loadOsuBeatmap(String filePath) {
+	public static synchronized OsuBeatmap loadOsuBeatmap(String filePath) {
 		OsuBeatmap map = osuBeatmapCache.get(filePath);
 		if (map == null) {
 			try {
@@ -393,4 +437,23 @@ public class Resources {
 		return map;
 	}
 
+
+
+	public static Thread resourcesLoader = new Thread(new Runnable() {
+		
+		@Override
+		public void run() {
+			for(Song song : songs){
+				for(int c=0; c<song.beatmapNames.size(); c++){
+					OsuBeatmap beatmap = loadOsuBeatmap(song, c);
+					loadBeatmapImage(song, beatmap);
+				}
+			}
+		}
+	});
+	
+	static{
+		resourcesLoader.start();
+	}
+	
 }

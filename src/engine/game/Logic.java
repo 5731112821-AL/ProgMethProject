@@ -41,8 +41,11 @@ public abstract class Logic {
 	
 	private void addObject(Object obj){
 //		System.out.println("Add Game Object " + obj);
-		if(obj instanceof Renderable)
-			renderList.add((Renderable) obj);
+		if(obj instanceof Renderable){
+			synchronized (renderList) {
+				renderList.add((Renderable) obj);
+			}
+		}
 		if(obj instanceof Updatable)
 			updatePreList.add((Updatable) obj);
 		if(obj instanceof GameObject2D)
@@ -50,8 +53,11 @@ public abstract class Logic {
 	}
 	private void removeObject(Object obj){
 //		System.out.println("Remove Game Object " + obj);
-		if(obj instanceof Renderable)
-			renderList.remove((Renderable) obj);
+		if(obj instanceof Renderable){
+			synchronized (renderList) {
+				renderList.remove((Renderable) obj);
+			}
+		}
 		if(obj instanceof Updatable)
 			updatePreList.remove((Updatable) obj);
 		if(obj instanceof GameObject2D)

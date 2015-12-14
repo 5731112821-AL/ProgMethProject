@@ -2,6 +2,7 @@ package flyerGame.gameObject;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import engine.utilities.HitableBox2D;
 import engine.utilities.Moving2D;
@@ -92,7 +93,13 @@ public class Bullet extends Target implements HitableBox2D, Moving2D {
 	
 	@Override
 	public void render(Graphics g) {
-		renderHitBox(g, Color.YELLOW);
+		int x = (int) Range.normalize(getX(), Resources.gameFieldX, Resources.virtualScreenGameFieldX);
+		int y = (int) Range.normalize(getY(), Resources.gameFieldY, Resources.virtualScreenGameFieldY);
+		
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.drawImage(Resources.raySprite, null, x-Resources.raySprite.getWidth()/2, y);
+		if(Resources.debugMode)
+			renderHitBox(g, Color.YELLOW);
 	}
 
 	public int getHitPoint() {

@@ -47,12 +47,12 @@ public class RenderLayer{
 	private ArrayList<Renderable> renderables;
 
 	public void addRenderable(Renderable renderable) {
-		synchronized (this) {
+		synchronized (renderables) {
 			this.renderables.add(renderable);
 		}
 	}
 	public void removeRenderable(Renderable renderable) {
-		synchronized (this) {
+		synchronized (renderables) {
 			this.renderables.remove(renderable);
 		}
 	}
@@ -60,8 +60,10 @@ public class RenderLayer{
 	void renderAll(Graphics g){
 		Graphics2D g2 = (Graphics2D)g;
 		if(counter > 0){
-			for(Renderable renderable : renderables)
-				renderable.render(g);
+			synchronized (renderables){
+				for(Renderable renderable : renderables)
+					renderable.render(g);
+			}
 			if(this.isVisible){
 				g2.setColor(new Color(0, 0, 0, (float)counter/counterResetVale));
 			}else{
@@ -73,7 +75,7 @@ public class RenderLayer{
 			counter--;
 		}
 		else if(this.isVisible)
-			synchronized (this){
+			synchronized (renderables){
 				for(Renderable renderable : renderables)
 					renderable.render(g);
 			}

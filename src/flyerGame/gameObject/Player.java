@@ -2,6 +2,7 @@ package flyerGame.gameObject;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 
 import engine.game.InputManager;
@@ -28,7 +29,7 @@ public class Player extends FiringTarget{
 			@Override
 			public Bullet createBullet() {
 //				System.out.println("New Bullet created");
-				Bullet bullet = new Bullet(this.getParentClass(), 1, getX(), getY(), 0, -0.1f);
+				Bullet bullet = new Bullet(this.getParentClass(), 1, getX(), getY(), 0, -0.1f, new Range(-0.07f, 0.07f), new Range(-0.05f, 2f));
 				return bullet;
 			}
 		};
@@ -36,18 +37,13 @@ public class Player extends FiringTarget{
 
 	@Override
 	public void render(Graphics g) {
-//		System.out.println("Rendering player");
-//		int 
-//			x = 	  Resources.normalizeToScreen(getX()), 
-//			y = 	  Resources.normalizeToScreen(getY());
-//		int 
-//			width  =  Resources.normalizeToScreen(this.width),
-//			height =  Resources.normalizeToScreen(this.height);
-//		
-//		Graphics2D g2d = (Graphics2D)g;
-//		g2d.setColor(Color.BLUE);
-//		g2d.drawRect((int)x - width/2, (int)y - height/2, width, height);
-		renderHitBox(g, Color.BLUE);
+		int x = (int) Range.normalize(getX(), Resources.gameFieldX, Resources.virtualScreenGameFieldX);
+		int y = (int) Range.normalize(getY(), Resources.gameFieldY, Resources.virtualScreenGameFieldY);
+		
+		Graphics2D g2d = (Graphics2D)g;
+		g2d.drawImage(Resources.playerSprite, null, x-Resources.playerSprite.getWidth()/2, y-Resources.playerSprite.getHeight()/2);
+		if(Resources.debugMode)
+			renderHitBox(g, Color.BLUE);
 	}
 
 	@Override

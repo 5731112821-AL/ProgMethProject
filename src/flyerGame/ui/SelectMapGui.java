@@ -2,11 +2,13 @@ package flyerGame.ui;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Map;
 
 import osuUtilities.OsuBeatmap;
 import engine.ui.Button;
 import engine.ui.DefaultedMouseListener;
 import engine.ui.ScaledImage;
+import engine.ui.UiLabel;
 import engine.ui.VisibleObject;
 import flyerGame.engineExtension.Resources;
 import flyerGame.engineExtension.SystemLogic;
@@ -16,6 +18,7 @@ import flyerGame.main.SongIndexer.Song;
 public class SelectMapGui extends Gui {
 
 	private Button prevDiffButton, nextDiffButton, prevSongButton, nextSongButton, backButton;
+	private UiLabel songName, artistName, creatorName;
 	private int songIndex;
 	private int beatmapIndex;
 	private ScaledImage[] preview = new ScaledImage[4];
@@ -73,9 +76,12 @@ public class SelectMapGui extends Gui {
 		renderablesToAdd.add(preview[2]);
 		preview[3] = new ScaledImage(null, 1600+offset, 285, 324, 243);
 		renderablesToAdd.add(preview[3]);
-		
-//		Song selectedSong = Resources.songs.get(songIndex);
-		
+		songName = new UiLabel("", 1010+offset ,745, Resources.selectMapLargeFont);
+		renderablesToAdd.add(songName);
+		artistName = new UiLabel("", 1150+offset ,790, Resources.selectMapStandardFont);
+		renderablesToAdd.add(artistName);
+		creatorName = new UiLabel("", 1150+offset ,830, Resources.selectMapStandardFont);
+		renderablesToAdd.add(creatorName);
 		
 		postConstrutorConfig();
 	}
@@ -86,6 +92,16 @@ public class SelectMapGui extends Gui {
 		nextDiffButton.setEnable(index < Resources.songs.get(this.songIndex).beatmapNames.size()-1);
 	}
 	
+	private void textReload(){
+		Song song = Resources.songs.get(this.songIndex);
+		OsuBeatmap beatmap = Resources.loadOsuBeatmap(song, beatmapIndex);
+		
+		Map<String, String> metadata = beatmap.data.get("Metadata");
+		this.songName.setString(metadata.get("Title"));
+		this.artistName.setString(metadata.get("Artist"));
+		this.creatorName.setString(metadata.get("Creator"));
+		
+	}
 	private void imageReload(){
 		Song song = Resources.songs.get(this.songIndex);
 		OsuBeatmap beatmap = Resources.loadOsuBeatmap(song, this.beatmapIndex);
@@ -112,6 +128,7 @@ public class SelectMapGui extends Gui {
 		prevSongButton.setEnable(index > 0);
 		nextSongButton.setEnable(index < Resources.songs.size()-1);
 		imageReload();
+		textReload();
 	}
 
 }

@@ -132,10 +132,13 @@ public class SystemLogic extends engine.game.Logic {
 			if(InputManager.isKeyActive(InputManager.KEY_ESC)){
 				stopLogic();
 			}
-			if(selectMapGui.isEnable()){
+			if(mainGui.isEnable()){
 				if(InputManager.isKeyActive(InputManager.KEY_ENTER)){
 					action(Action.selectMap);
+					InputManager.forceFlushKeys();
 				}
+			}
+			if(selectMapGui.isEnable()){
 				if(InputManager.isKeyActive(InputManager.KEY_RIGHT_ARROW)){
 					System.out.println("next song");
 					setCurrentSongIndex(getCurrentSongIndex()+1);
