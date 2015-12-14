@@ -11,7 +11,7 @@ public class EnemyTarget extends Target{
 	static float speedY = 0.001f;
 
 	public EnemyTarget(int healthPoint, float x, float y) {
-		super(healthPoint, x, y, Resources.screenFieldExX, Resources.screenFieldExY);
+		super(healthPoint, x, y, Resources.gameFieldExX, Resources.gameFieldExY);
 	}
 	
 	@Override

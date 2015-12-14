@@ -16,7 +16,7 @@ public abstract class Target extends GameObject2D implements HitableBox2D, Updat
 	private int healthPoint;
 
 	public Target(int health, float x, float y) {
-		this(health, x, y, Resources.screenFieldX, Resources.screenFieldY);
+		this(health, x, y, Resources.gameFieldX, Resources.gameFieldY);
 	}
 
 	public Target(int health, float x, float y, Range xRange, Range yRange) {
@@ -37,8 +37,8 @@ public abstract class Target extends GameObject2D implements HitableBox2D, Updat
 	
 	public void renderHitBox(Graphics g, Color color) {
 		int 
-			fromX = (int) Range.map(getX() + getHitBoxXRange().min, Resources.screenFieldX, Resources.virtualScreenFieldX),
-			fromY = (int) Range.map(getY() + getHitBoxYRange().min, Resources.screenFieldY, Resources.virtualScreenFieldY);
+			fromX = (int) Range.map(getX() + getHitBoxXRange().min, Resources.gameFieldX, Resources.virtualScreenGameFieldX),
+			fromY = (int) Range.map(getY() + getHitBoxYRange().min, Resources.gameFieldY, Resources.virtualScreenGameFieldY);
 		
 		Graphics2D g2d = (Graphics2D)g;
 		
@@ -48,8 +48,8 @@ public abstract class Target extends GameObject2D implements HitableBox2D, Updat
 		g2d.drawRect(
 				fromX, 
 				fromY, 
-				(int) Range.map(getHitBoxXRange().size(), Resources.screenFieldX, Resources.virtualScreenFieldX),
-				(int) Range.map(getHitBoxYRange().size(), Resources.screenFieldY, Resources.virtualScreenFieldY));
+				(int) Range.scale(getHitBoxXRange().size(), Resources.gameFieldX, Resources.virtualScreenGameFieldX),
+				(int) Range.scale(getHitBoxYRange().size(), Resources.gameFieldY, Resources.virtualScreenGameFieldY));
 	}
 	
 }

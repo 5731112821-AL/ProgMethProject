@@ -3,6 +3,9 @@ package flyerGame.engineExtension;
 import java.applet.Applet;
 import java.applet.AudioClip;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,54 +28,99 @@ public class Resources {
 	private Resources() {
 	}
 
-	public static final int
-		virtualScreenWidth = 1440,
-		virtualScreenHeight = 1080;
-	public static final int
-		screenWidth = 1024,
-		screenHeight = 768;
-	
-	public static final float
-		scale = (float)screenHeight/1080;
-	
-	public static final Range
-			screenFieldX = new Range(0, 12),
-			screenFieldY = new Range(0, 9),
-			screenFieldExX = new Range(screenFieldX.min-1, screenFieldX.max+1),
-			screenFieldExY = new Range(screenFieldY.min-1, screenFieldY.max+1),
-			virtualScreenFieldX = new Range(0, virtualScreenWidth),
-			virtualScreenFieldY = new Range(0, virtualScreenHeight),
-			trueScreenFieldX = new Range(0, screenWidth),
-			trueScreenFieldY = new Range(0, screenHeight);
-	public static final Dimension virtualScreenDimension = new Dimension(virtualScreenWidth, virtualScreenHeight);
-	public static final Dimension screenDimension = new Dimension(screenWidth, screenHeight);
 
-	public static enum Axis{
-		X, Y
+	public static int
+		ratioHeight, ratioWidth;
+	
+	public static final int 
+			virtualScreenHeight = 1080;
+	public static int 
+			virtualScreenWidth;
+
+	public static int 
+			screenHeight, screenWidth;
+
+	public static int
+			globalOffset;
+	public static float
+			scale;
+
+	public static final Range 
+			gameFieldX = new Range(0, 12),
+			gameFieldY = new Range(0, 9);
+	public static Range 
+			gameFieldExX, gameFieldExY,
+			virtualScreenFieldX, virtualScreenFieldY,
+			virtualScreenGameFieldX, virtualScreenGameFieldY,
+			trueScreenFieldX, trueScreenFieldY,
+			trueScreenGameFieldX, trueScreenGameFieldY;
+	public static Dimension 
+			virtualScreenDimension;
+	public static Dimension
+			screenDimension;
+
+	static{
+		ratioWidth = 16; ratioHeight = 9; 
+		screenHeight = 600;
+		recalculateScreenProperties();
+		
+		System.out.println("virtualScreenWidth " + virtualScreenWidth);
+		System.out.println("screenWidth " + screenWidth);
+
+		System.out.println("globalOffset " + globalOffset);
+
+		System.out.println("screenFieldX " + gameFieldX);
+		System.out.println("screenFieldY " + gameFieldY);
+		System.out.println("screenFieldExX " + gameFieldExX);
+		System.out.println("screenFieldExY " + gameFieldExY);
+		System.out.println("virtualScreenFieldX " + virtualScreenFieldX);
+		System.out.println("virtualScreenFieldY " + virtualScreenFieldY);
+		System.out.println("virtualScreenGameFieldX " + virtualScreenGameFieldX);
+		System.out.println("virtualScreenGameFieldY " + virtualScreenGameFieldY);
+		System.out.println("trueScreenFieldX " + trueScreenFieldX);
+		System.out.println("trueScreenFieldY " + trueScreenFieldY);
+
+		System.out.println("virtualScreenDimension " + virtualScreenDimension);
+
+		System.out.println("screenDimension " + screenDimension);
 	}
 	
-//	public static float normalizeToVirtualScreen(float in, Axis axis) {
-//		if(axis == Axis.X)
-//			return (in * trueScreenFieldX.max / screenFieldX.max);
-//		else
-//			return (in * trueScreenFieldY.max / screenFieldY.max);
-//	}
-//
-//	public static float normalizeToGame(int in, Axis axis) {
-//		if(axis == Axis.X)
-//			return (in * screenFieldX.max / trueScreenFieldX.max);
-//		else
-//			return (in * screenFieldY.max / trueScreenFieldY.max);
-//	}
-//
-//	public static Range normalizeToVirtualScreen(Range in, Axis axis) {
-//		if(axis == Axis.X)
-//			return new Range(Range.normalize(in.min, screenFieldX, trueScreenFieldX),
-//					Range.normalize(in.max, screenFieldX, trueScreenFieldX));
-//		else
-//			return new Range(Range.normalize(in.min, screenFieldY, trueScreenFieldY),
-//					Range.normalize(in.max, screenFieldY, trueScreenFieldY));
-//	}
+	public static final void recalculateScreenProperties(){
+		// ratioHeight, ratioWidth Must be set
+
+		virtualScreenWidth = virtualScreenHeight*ratioWidth/ratioHeight;
+
+		// screenHeight Must be set
+		screenWidth = screenHeight*ratioWidth/ratioHeight;
+
+		globalOffset = (virtualScreenWidth-1920)/2;
+		
+		scale = (float)screenHeight/virtualScreenHeight;
+
+		gameFieldExX = new Range(gameFieldX.min - 1, gameFieldX.max + 1);
+		gameFieldExY = new Range(gameFieldY.min - 1,gameFieldY.max + 1);
+		virtualScreenFieldX = new Range(0, 1920+2*globalOffset);
+		virtualScreenFieldY = new Range(0, 1080);
+
+		///TESTING
+		virtualScreenGameFieldX = new Range(240+globalOffset, 1440+240+globalOffset);
+		virtualScreenGameFieldY = new Range(0, 1080);
+		
+//		int offset = (int)( ((double)ratioWidth/ratioHeight - (double)4/3)*screenHeight/2 ) ;
+//		trueScreenFieldX = new Range(0, offset+screenHeight*4/3);
+		trueScreenFieldX = new Range(0, screenWidth);
+		trueScreenFieldY = new Range(0, screenHeight);
+		trueScreenGameFieldX = Range.map(virtualScreenGameFieldX, virtualScreenFieldX, trueScreenFieldX);
+		trueScreenGameFieldY = Range.map(virtualScreenGameFieldY, virtualScreenFieldY, trueScreenFieldY);
+
+		virtualScreenDimension = new Dimension(virtualScreenWidth, virtualScreenHeight);
+
+		screenDimension = new Dimension(screenWidth, screenHeight);
+	}
+	
+	public static enum Axis {
+		X, Y
+	}
 
 	private static ClassLoader loader = Resources.class.getClassLoader();
 	private static String spriteFolderPath = "res/images/sprite/";
@@ -81,14 +129,17 @@ public class Resources {
 	public static AudioClip soundFxDrum;
 
 	public static InfiniteTile gameBackground;
-	public static BufferedImage backButton;
+	public static SpriteMap backButton;
+
+	public static Font standardFont;
 
 	static {
 		// Load images and SoundFx
 		try {
 			gameBackground = new InfiniteTile(ImageIO.read(loader
 					.getResource("res/images/game_background.png")));
-			backButton = ImageIO.read(loader.getResource("res/images/back_button.png"));
+			backButton = new SpriteMap(ImageIO.read(loader.getResource(
+					spriteFolderPath + "back.png")), 3, 1);
 
 			soundFxStart = Applet.newAudioClip((loader
 					.getResource("res/soundFX/gos.wav")));
@@ -112,19 +163,37 @@ public class Resources {
 			System.out.println("Failed to index Beatmaps !!!");
 			e.printStackTrace();
 		}
+
+		// Load Font
+		try {
+			standardFont = Font
+					.createFont(
+							Font.TRUETYPE_FONT,
+							loader.getResourceAsStream("res/fonts/NEON CLUB MUSIC.otf"));
+			System.out.println("Font Sucessfully loaded YAY !!!");
+		} catch (Exception e) {
+			System.out.println("Font Failed to load !!!");
+			e.printStackTrace();
+		}
 	}
 
-	public static class MainGUI{
-		public static BufferedImage background, start, setting, credits, exit;
-		static{
+	public static class MainGUI {
+		public static BufferedImage background;
+		public static SpriteMap start, setting, credits, exit;
+		static {
 			try {
-				System.out.println("Loading MainGUI data");
+				System.out.print("Loading MainGUI data...");
 				String folderPath = "res/images/main_gui/";
-				background = ImageIO.read(loader.getResource(folderPath+"main_background.png"));
-				start = ImageIO.read(loader.getResource(folderPath+"main_startgame.png"));
-				setting = ImageIO.read(loader.getResource(folderPath+"main_setting.png"));
-				credits = ImageIO.read(loader.getResource(folderPath+"main_credits.png"));
-				exit = ImageIO.read(loader.getResource(folderPath+"main_exit.png"));
+				background = ImageIO.read(loader.getResource(folderPath
+						+ "main_background.png"));
+				start = new SpriteMap(ImageIO.read(loader.getResource(
+						folderPath + "main_start.png")), 3, 1);
+				setting = new SpriteMap(ImageIO.read(loader.getResource(
+						folderPath + "main_setting.png")), 3, 1);
+				credits = new SpriteMap(ImageIO.read(loader.getResource(
+						folderPath + "main_credits.png")), 3, 1);
+				exit = new SpriteMap(ImageIO.read(loader.getResource(
+						folderPath + "main_exit.png")), 3, 1);
 				System.out.println("Sucess!!!");
 			} catch (IOException e) {
 				background = null;
@@ -137,114 +206,188 @@ public class Resources {
 			}
 		}
 	}
-	public static class SelectMapGUI{
-		public static BufferedImage background, tag, sideArrow, back;
-		public static SpriteMap rightArrow, leftArrow;
-		static{
+
+	public static class SelectMapGUI {
+		public static BufferedImage background, tag;
+		public static SpriteMap rightArrow, leftArrow, sideArrow, back;
+		static {
 			try {
-				System.out.println("Loading SelectMapGUI data");
+				System.out.print("Loading SelectMapGUI data...");
 				String folderPath = "res/images/selectmap_gui/";
-				background = ImageIO.read(loader.getResource(folderPath+"selectmap_background.png"));
-				tag = ImageIO.read(loader.getResource(folderPath+"selectmap_tag.png"));
-				sideArrow = ImageIO.read(loader.getResource(folderPath+"side_arrow.png"));
-				rightArrow = new SpriteMap(ImageIO.read(loader.getResource(spriteFolderPath+"selectmap_rightarrow_sprite.png")), 3, 1);
-				leftArrow = new SpriteMap(ImageIO.read(loader.getResource(spriteFolderPath+"selectmap_leftarrow_sprite.png")), 3, 1);
-//				credits = ImageIO.read(loader.getResource(folderPath+"main_credits.png"));
+				background = ImageIO.read(loader.getResource(folderPath
+						+ "selectmap_background.png"));
+				tag = ImageIO.read(loader.getResource(folderPath
+						+ "selectmap_tag.png"));
+				sideArrow = new SpriteMap(ImageIO.read(loader
+						.getResource(spriteFolderPath + "nevigator.png")), 3, 1);
+				rightArrow = new SpriteMap(ImageIO.read(loader
+						.getResource(spriteFolderPath
+								+ "selectmap_rightarrow.png")), 4, 1);
+				leftArrow = new SpriteMap(ImageIO.read(loader
+						.getResource(spriteFolderPath
+								+ "selectmap_arrowleft.png")), 4, 1);
+				// credits =
+				// ImageIO.read(loader.getResource(folderPath+"main_credits.png"));
 				back = backButton;
 				System.out.println("Sucess!!!");
 			} catch (IOException e) {
 				background = null;
 				tag = null;
 				sideArrow = null;
-//				credits = null;
+				// credits = null;
 				back = null;
 				System.out.println("Failed");
 				e.printStackTrace();
 			}
 		}
 	}
-	public static class SettingGUI{
-		public static BufferedImage background, back;
-		public static SpriteMap rightArrow, leftArrow;
-		static{
+
+	public static class SettingGUI {
+		public static BufferedImage background;
+		public static SpriteMap rightArrow, leftArrow, back;
+		static {
 			try {
-				System.out.println("Loading SettingGUI data");
+				System.out.print("Loading SettingGUI data...");
 				String folderPath = "res/images/setting_gui/";
-				background = ImageIO.read(loader.getResource(folderPath+"setting_background.png"));
-				rightArrow = new SpriteMap(ImageIO.read(loader.getResource(spriteFolderPath+"setting_rightarrow_sprite.png")), 3, 1);
-				leftArrow = new SpriteMap(ImageIO.read(loader.getResource(spriteFolderPath+"setting_leftarrow_sprite.png")), 3, 1);
-//				setting = ImageIO.read(loader.getResource(folderPath+"main_setting.png"));
-//				credits = ImageIO.read(loader.getResource(folderPath+"main_credits.png"));
+				background = ImageIO.read(loader.getResource(folderPath
+						+ "setting_background.png"));
+				rightArrow = new SpriteMap(ImageIO.read(loader
+						.getResource(spriteFolderPath
+								+ "setting_arrowright.png")), 4, 1);
+				leftArrow = new SpriteMap(
+						ImageIO.read(loader.getResource(spriteFolderPath
+								+ "setting_arrowleft.png")), 4, 1);
+				// setting =
+				// ImageIO.read(loader.getResource(folderPath+"main_setting.png"));
+				// credits =
+				// ImageIO.read(loader.getResource(folderPath+"main_credits.png"));
 				back = backButton;
 				System.out.println("Sucess!!!");
 			} catch (IOException e) {
 				background = null;
 				rightArrow = null;
-//				setting = null;
-//				credits = null;
+				// setting = null;
+				// credits = null;
 				back = null;
 				System.out.println("Failed");
 				e.printStackTrace();
 			}
 		}
 	}
-	public static class CreditsGUI{
-		public static BufferedImage background, back;
-		static{
+
+	public static class CreditsGUI {
+		public static BufferedImage background;
+		public static SpriteMap back;
+		static {
 			try {
-				System.out.println("Loading CreditsGUI data");
+				System.out.print("Loading CreditsGUI data...");
 				String folderPath = "res/images/setting_gui/";
-				background = ImageIO.read(loader.getResource(folderPath+"setting_background.png"));
-//				start = ImageIO.read(loader.getResource(folderPath+"main_startgame.png"));
-//				setting = ImageIO.read(loader.getResource(folderPath+"main_setting.png"));
-//				credits = ImageIO.read(loader.getResource(folderPath+"main_credits.png"));
+				background = ImageIO.read(loader.getResource(folderPath
+						+ "setting_background.png"));
+				// start =
+				// ImageIO.read(loader.getResource(folderPath+"main_startgame.png"));
+				// setting =
+				// ImageIO.read(loader.getResource(folderPath+"main_setting.png"));
+				// credits =
+				// ImageIO.read(loader.getResource(folderPath+"main_credits.png"));
 				back = backButton;
 				System.out.println("Sucess!!!");
 			} catch (IOException e) {
 				background = null;
-//				start = null;
-//				setting = null;
-//				credits = null;
+				// start = null;
+				// setting = null;
+				// credits = null;
 				back = null;
 				System.out.println("Failed");
 				e.printStackTrace();
 			}
 		}
 	}
-	private static Map<String, AudioClip> beatmapAudioClip = new TreeMap<String, AudioClip>();
-	private static Map<String, OsuBeatmap> maps = new TreeMap<String, OsuBeatmap>();
 
-	public static List<Song> songs = new ArrayList<SongIndexer.Song>();
+	private static Map<String, AudioClip> beatmapAudioClipCache = new TreeMap<String, AudioClip>();
+	private static Map<String, BufferedImage> beatmapImageCache = new TreeMap<String, BufferedImage>();
+	private static Map<String, OsuBeatmap> osuBeatmapCache = new TreeMap<String, OsuBeatmap>();
+
+	/**
+	 * Class List < Song > <br>
+	 * List of all Songs indexed.
+	 */
+	public static List<Song> songs;
+
+	public static void play(Song song) {
+		Resources.loadBeatmapAudioClip(song.folderPath + song.songName).play();
+	}
+
+	public static void stop(Song song) {
+		Resources.loadBeatmapAudioClip(song.folderPath + song.songName).stop();
+	}
+
+	public static BufferedImage loadBeatmapImage(Song song) {
+		return loadBeatmapImage(song, loadOsuBeatmap(song, 0));
+	}
+
+	public static BufferedImage loadBeatmapImage(Song song, OsuBeatmap beatmap) {
+		if (song == null || beatmap == null)
+			return null;
+		return loadBeatmapImage(song.folderPath
+				+ beatmap.data.get("Events").get("background"));
+	}
+
+	public static BufferedImage loadBeatmapImage(String filePath) {
+		BufferedImage image = beatmapImageCache.get(filePath);
+		if (image == null) {
+			try {
+				System.out.print("Load Image : " + filePath + "...");
+				image = ImageIO.read(loader
+						.getResource("res/songs/" + filePath));
+				beatmapImageCache.put(filePath, image);
+				System.out.println("Loaded");
+			} catch (Exception e) {
+				System.out.println("Failed");
+				e.printStackTrace();
+			}
+		} else {
+			// System.out.println("Using Cache");
+		}
+		return image;
+	}
 
 	public static AudioClip loadBeatmapAudioClip(String filePath) {
-		System.out.println("loadBeatmapAudioClip " + filePath);
-		AudioClip beatmapAC = beatmapAudioClip.get(filePath);
+		// System.out.println("loadBeatmapAudioClip " + filePath);
+		AudioClip beatmapAC = beatmapAudioClipCache.get(filePath);
 		if (beatmapAC == null) {
 			try {
 				beatmapAC = Applet.newAudioClip((loader
 						.getResource("res/songs/" + filePath)));
-				beatmapAudioClip.put(filePath, beatmapAC);
-				System.out.println("Loaded File");
+				beatmapAudioClipCache.put(filePath, beatmapAC);
+				// System.out.println("Loaded File");
 			} catch (Exception e) {
-				System.out.println("Load Map : " + filePath + "Failed");
+				// System.out.println("Load Map : " + filePath + "Failed");
 				e.printStackTrace();
 			}
 		} else {
-			System.out.println("Using Cache");
+			// System.out.println("Using Cache");
 		}
 		return beatmapAC;
 	}
 
-	public static OsuBeatmap loadOsuBeatMap(String filePath) {
-		OsuBeatmap map = maps.get(filePath);
+	public static OsuBeatmap loadOsuBeatmap(Song song, int index) {
+		if (song == null)
+			return null;
+		return loadOsuBeatmap(song.folderPath + song.beatmapNames.get(index));
+	}
+
+	public static OsuBeatmap loadOsuBeatmap(String filePath) {
+		OsuBeatmap map = osuBeatmapCache.get(filePath);
 		if (map == null) {
 			try {
 				map = new OsuBeatmap(loader.getResourceAsStream("res/songs/"
 						+ filePath));
-				maps.put(filePath, map);
+				osuBeatmapCache.put(filePath, map);
 			} catch (Exception e) {
 				System.out.println("Load Map : " + filePath + "Failed");
 				e.printStackTrace();
+				return null;
 			}
 		}
 		return map;

@@ -3,79 +3,115 @@ package flyerGame.ui;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import osuUtilities.OsuBeatmap;
 import engine.ui.Button;
+import engine.ui.DefaultedMouseListener;
+import engine.ui.ScaledImage;
 import engine.ui.VisibleObject;
 import flyerGame.engineExtension.Resources;
 import flyerGame.engineExtension.SystemLogic;
 import flyerGame.engineExtension.SystemLogic.Action;
+import flyerGame.main.SongIndexer.Song;
 
 public class SelectMapGui extends Gui {
 
-	private Button prevDiffButton, nextDiffButton;
+	private Button prevDiffButton, nextDiffButton, prevSongButton, nextSongButton, backButton;
+	private int songIndex;
+	private int beatmapIndex;
+	private ScaledImage[] preview = new ScaledImage[4];
 	
 	public SelectMapGui(SystemLogic systemLogic) {
-		int offset = -240;
-		Button backButton = new Button(Resources.SelectMapGUI.back, 820+offset, 950, new MouseListener() {
+		int offset = Resources.globalOffset;
+		backButton = new Button(Resources.SelectMapGUI.back, 820+offset, 950, new DefaultedMouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				systemLogic.action(Action.back);
 			}
-			@Override public void mousePressed(MouseEvent e) {}
-			@Override public void mouseClicked(MouseEvent e) {}
-			@Override public void mouseEntered(MouseEvent e) {}
-			@Override public void mouseExited(MouseEvent e) {}
 		});
 		buttons.add(backButton);
-		
-		Button nextSongButton = new Button(Resources.SelectMapGUI.sideArrow, 850+offset, 355, new MouseListener() {
+
+		nextSongButton = new Button(Resources.SelectMapGUI.sideArrow, 850+offset, 355, new DefaultedMouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				systemLogic.action(Action.nextSong);
+				systemLogic.setCurrentSongIndex(systemLogic.getCurrentSongIndex()+1);
 			}
-			@Override public void mousePressed(MouseEvent e) {}
-			@Override public void mouseClicked(MouseEvent e) {}
-			@Override public void mouseEntered(MouseEvent e) {}
-			@Override public void mouseExited(MouseEvent e) {}
 		});
 		buttons.add(nextSongButton);
 
-		nextDiffButton = new Button(Resources.SelectMapGUI.rightArrow, 706+offset, 780, new MouseListener() {
+		prevSongButton = new Button(Resources.SelectMapGUI.sideArrow, 400+offset, 355, new DefaultedMouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				nextDiffButton.setClicked(false);
-				systemLogic.action(Action.setting);
-				}
-			@Override public void mousePressed(MouseEvent e) {
-				nextDiffButton.setClicked(true);}
-			@Override public void mouseClicked(MouseEvent e) {}
-			@Override public void mouseEntered(MouseEvent e) {
-//				System.out.println("hover"); TODO
-				nextDiffButton.setHover(true);}
-			@Override public void mouseExited(MouseEvent e) {
-				nextDiffButton.setHover(false);}
+				systemLogic.setCurrentSongIndex(systemLogic.getCurrentSongIndex()-1);
+			}
+		});
+//		buttons.add(prevSongButton); TODO
+
+		nextDiffButton = new Button(Resources.SelectMapGUI.rightArrow, 706+offset, 780, new DefaultedMouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+//				systemLogic.action(Action.setting); TODO
+			}
 		});
 		buttons.add(nextDiffButton);
 		
-		prevDiffButton = new Button(Resources.SelectMapGUI.leftArrow, 370+offset, 780, new MouseListener() {
+		prevDiffButton = new Button(Resources.SelectMapGUI.leftArrow, 370+offset, 780, new DefaultedMouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				prevDiffButton.setClicked(false);
-				systemLogic.action(Action.setting);
+//				systemLogic.action(Action.setting); TODO
 			}
-			@Override public void mousePressed(MouseEvent e) {
-				prevDiffButton.setClicked(true);}
-			@Override public void mouseClicked(MouseEvent e) {}
-			@Override public void mouseEntered(MouseEvent e) {
-				prevDiffButton.setHover(true);}
-			@Override public void mouseExited(MouseEvent e) {
-				prevDiffButton.setHover(false);}
 		});
 		buttons.add(prevDiffButton);
 		
-		visibleObjects.add(new VisibleObject(Resources.SelectMapGUI.background, offset, 0, 0, 0));
-		visibleObjects.add(new VisibleObject(Resources.SelectMapGUI.tag, 880+offset, 615, 0, 0));
+		renderablesToAdd.add(new VisibleObject(Resources.SelectMapGUI.background, offset, 0, 0, 0));
+		renderablesToAdd.add(new VisibleObject(Resources.SelectMapGUI.tag, 880+offset, 615, 0, 0));
+
+		preview[0] = new ScaledImage(null, 295+offset, 285, 540, 405);
+		renderablesToAdd.add(preview[0]);
+		preview[1] = new ScaledImage(null, 910+offset, 285, 324, 243);
+		renderablesToAdd.add(preview[1]);
+		preview[2] = new ScaledImage(null, 1255+offset, 285, 324, 243);
+		renderablesToAdd.add(preview[2]);
+		preview[3] = new ScaledImage(null, 1600+offset, 285, 324, 243);
+		renderablesToAdd.add(preview[3]);
 		
-		initButtonsAndVisibleObjects();
+//		Song selectedSong = Resources.songs.get(songIndex);
+		
+		
+		postConstrutorConfig();
+	}
+	
+	private void setBeatmapIndex(int index){
+		this.beatmapIndex = index;
+		prevDiffButton.setEnable(index > 0);
+		nextDiffButton.setEnable(index < Resources.songs.get(this.songIndex).beatmapNames.size()-1);
+	}
+	
+	private void imageReload(){
+		Song song = Resources.songs.get(this.songIndex);
+		OsuBeatmap beatmap = Resources.loadOsuBeatmap(song, this.beatmapIndex);
+		preview[0].setImage(Resources.loadBeatmapImage(song, beatmap));
+		for(int c=1; c<4; c++){
+			try{
+				song = Resources.songs.get(this.songIndex+c);
+			}catch(IndexOutOfBoundsException e){
+				song = null;
+			}
+			beatmap = Resources.loadOsuBeatmap(song, 0);
+			preview[c].setImage(Resources.loadBeatmapImage(song, beatmap));
+		}
+	}
+	
+	public void setSongIndex(int index){
+		System.out.println("setSongIndex " + index);
+		
+		if(index != this.songIndex){
+			this.beatmapIndex = 0;
+		}
+		
+		this.songIndex = index;
+		prevSongButton.setEnable(index > 0);
+		nextSongButton.setEnable(index < Resources.songs.size()-1);
+		imageReload();
 	}
 
 }

@@ -12,8 +12,19 @@ public class VisibleObject implements Renderable {
 	private SpriteMap spriteMap;
 	private boolean isVisible;
 	
+	public SpriteMap getSpriteMap() {
+		return spriteMap;
+	}
+
+	public void setSpriteMap(SpriteMap spriteMap) {
+		this.spriteMap = spriteMap;
+	}
+
+	public void setSpriteMap(BufferedImage bufferedImage) {
+		setSpriteMap(new SpriteMap(bufferedImage, 1, 1));
+	}
+
 	public void setState(int state) {
-		System.out.println(state); //TODO
 		this.state = state;
 	}
 

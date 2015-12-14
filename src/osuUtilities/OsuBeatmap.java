@@ -98,6 +98,10 @@ public class OsuBeatmap {
 										));
 					}
 				}
+			} else if(lines[0].compareTo("Events") == 0){
+				Map<String, String> map = new TreeMap<String, String>();
+				map.put("background", lines[2].split(",")[2].replaceAll("\"", ""));
+				data.put(lines[0], map);
 			} else{
 				Map<String, String> map = new TreeMap<String, String>();
 				for(int c=1; c<lines.length; c++){

@@ -37,7 +37,8 @@ public class InputManager {
 		KEY_LEFT_ARROW  = 37,
 		KEY_RIGHT_ARROW = 39,
 		KEY_ESC         = 27,
-		KEY_SPACEBAR	= 32;
+		KEY_SPACEBAR	= 32,
+		KEY_ENTER		= 10;
 	
 	private static boolean[] keyActive = new boolean[256];
 
@@ -204,13 +205,13 @@ public class InputManager {
 		});
 	}
 	
-	private static ScreenMouseListener findMouseListenerAt(int x, int y) {
+	private static ScreenMouseListener findMouseListenerAt(int screenX, int screenY) {
 		updateCustomMouseListeners();
-		x = (int) Range.map(x, Resources.trueScreenFieldX, Resources.virtualScreenFieldX);
-		y = (int) Range.map(y, Resources.trueScreenFieldY, Resources.virtualScreenFieldY);
+		int screenVirtualX = (int) (screenX/Resources.scale);
+		int screenVirtualY = (int) (screenY/Resources.scale);
 		for(int c=screenMouseListeners.size()-1; c>=0; c--){
 			ScreenMouseListener screenMouseListener = screenMouseListeners.get(c);
-			if(screenMouseListener.isActive==true && screenMouseListener.boundX.inRange(x) && screenMouseListener.boundY.inRange(y)){
+			if(screenMouseListener.isActive==true && screenMouseListener.boundX.inRange(screenVirtualX) && screenMouseListener.boundY.inRange(screenVirtualY)){
 				return screenMouseListener;
 			}
 		}
@@ -222,7 +223,6 @@ public class InputManager {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			Point location = e.getPoint();
-			System.out.println("Mouse Clicked At ("+location.getX()+","+location.getY()+")");
 			ScreenMouseListener screenMouseListener = findMouseListenerAt((int)location.getX(), (int)location.getY()); 
 			if(screenMouseListener != null && screenMouseListener.mouseListener != null){
 				pendingMouseEvents.add(
@@ -237,6 +237,7 @@ public class InputManager {
 		public void mousePressed(MouseEvent e) {
 			setMouseHoldDown(true);
 			Point location = e.getPoint();
+			System.out.println("Mouse Clicked At ("+location.getX()+","+location.getY()+")");
 			ScreenMouseListener screenMouseListener = findMouseListenerAt((int)location.getX(), (int)location.getY()); 
 			if(screenMouseListener != null && screenMouseListener.mouseListener != null){
 				pendingMouseEvents.add(

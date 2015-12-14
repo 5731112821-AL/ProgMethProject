@@ -1,6 +1,6 @@
 package engine.ui;
 
-import java.awt.Graphics;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 
@@ -39,6 +39,7 @@ public class Button extends VisibleObject {
 
 	public void setEnable(boolean enable) {
 		this.enable = enable;
+		this.screenMouseListener.setActive(enable);
 		updateState();
 	}
 
@@ -100,7 +101,37 @@ public class Button extends VisibleObject {
 	public Button(SpriteMap spriteMap, int screenX, int screenY, MouseListener mouseListener, double zIndex) {
 		super(spriteMap, screenX, screenY, spriteMap.getWidth(), spriteMap.getHeight());
 		screenMouseListener = new ScreenMouseListener(
-				mouseListener,
+				new MouseListener() {
+					
+					@Override
+					public void mouseReleased(MouseEvent e) {
+						setClicked(false);
+						mouseListener.mouseReleased(e);
+					}
+					
+					@Override
+					public void mousePressed(MouseEvent e) {
+						setClicked(true);
+						mouseListener.mousePressed(e);
+					}
+					
+					@Override
+					public void mouseExited(MouseEvent e) {
+						setHover(false);
+						mouseListener.mouseExited(e);
+					}
+					
+					@Override
+					public void mouseEntered(MouseEvent e) {
+						setHover(true);
+						mouseListener.mouseEntered(e);
+					}
+					
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						mouseListener.mouseClicked(e);
+					}
+				},
 				new Range(getScreenX(), getScreenX()+getWidth() ), 
 				new Range(getScreenY(), getScreenY()+getHeight()),
 				zIndex);

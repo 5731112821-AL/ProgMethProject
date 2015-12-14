@@ -1,15 +1,14 @@
 package flyerGame.engineExtension;
 
-import java.util.ArrayList;
+import java.awt.Dimension;
 import java.util.List;
 
 import osuUtilities.OsuBeatmap;
-import osuUtilities.OsuBeatmap.HitCircle;
 import engine.game.GameObject2D;
 import engine.game.InputManager;
-import engine.game.InputManager.ScreenMouseListener;
 import engine.render.GamePanel;
 import engine.render.RenderLayer;
+import flyerGame.main.Main;
 import flyerGame.main.SongIndexer.Song;
 import flyerGame.ui.CreditsGui;
 import flyerGame.ui.Gui;
@@ -21,11 +20,13 @@ public class SystemLogic extends engine.game.Logic {
 	
 	private static final int TARGET_FPS = 60;
 	
-	private Gui mainGui, settingGui, creditsGui, selectMapGui;
+	private Gui mainGui, settingGui, creditsGui; 
+	private SelectMapGui selectMapGui;
 	private GamePanel gamePanel;
 	private boolean gameRunning;
 	private GameLogic gameLogic;
-	
+	private int currentSongIndex;
+
 	public SystemLogic(GamePanel gamePanel) {
 		super(TARGET_FPS);
 		this.gamePanel = gamePanel;
@@ -34,37 +35,61 @@ public class SystemLogic extends engine.game.Logic {
 			updatePostList.add(gamePanel);// Add gamePanel's render system to render after the GameLoop (updatePostList)
 		}
 		initUI();
+		setCurrentSongIndex(0);
+//		setCurrentSongIndex((int)(Math.random()*Resources.songs.size()));
+	}
+
+	public int getCurrentSongIndex() {
+		return currentSongIndex;
+	}
+
+	public void setCurrentSongIndex(int currentSongIndex) {
+		if(currentSongIndex>=0 && currentSongIndex<Resources.songs.size()){
+			Resources.stop(Resources.songs.get(this.currentSongIndex));
+			this.currentSongIndex = currentSongIndex;
+			selectMapGui.setSongIndex(currentSongIndex);
+			Resources.play(Resources.songs.get(currentSongIndex));
+		}
 	}
 
 	public static enum Action{
-		startGame, selectMap, nextSong, setting, credits, back, exit
+		startGame, selectMap, setting, credits, back, exit
 	}
 	public void action(Action action){
 		switch (action) {
 		case startGame:
 			System.out.println("Start");
 			gameRunning = true;
-			Song song = Resources.songs.get(0);
-			OsuBeatmap osuBeatmap = Resources.loadOsuBeatMap(song.folderPath + song.beatmapNames.get(song.beatmapNames.size()-1));
+			Song song = Resources.songs.get(currentSongIndex);
+			OsuBeatmap osuBeatmap = Resources.loadOsuBeatmap(song.folderPath + song.beatmapNames.get(song.beatmapNames.size()-1));
 			gameLogic = new GameLogic(
 					gamePanel, 
-					Resources.loadBeatmapAudioClip(song.folderPath + song.songName), 
-					osuBeatmap.hitCircles);
+					song, 
+					osuBeatmap);
+			gameRunning = true;
+			selectMapGui.setEnable(false);
 			break;
 			
 		case selectMap:
 			System.out.println("Select Map");
 			selectMapGui.setEnable(true);
+			mainGui.setEnable(false);
 			break;
 
 		case setting:
 			System.out.println("Setting");
 			settingGui.setEnable(true);
+			mainGui.setEnable(false);
 			break;
 
 		case credits:
 			System.out.println("Credits");
 			creditsGui.setEnable(true);
+//			Resources.screenHeight = 600;
+//			Resources.recalculateScreenProperties();
+//			gamePanel.setPreferredSize(Resources.screenDimension);
+//			Main.frame.pack();
+			mainGui.setEnable(false);
 			break;
 
 		case back:
@@ -72,6 +97,7 @@ public class SystemLogic extends engine.game.Logic {
 			settingGui.setEnable(false);
 			creditsGui.setEnable(false);
 			selectMapGui.setEnable(false);
+			mainGui.setEnable(true);
 			break;
 
 		case exit:
@@ -101,12 +127,31 @@ public class SystemLogic extends engine.game.Logic {
 	
 	@Override
 	protected void logicLoop(long frameTime) {
+		gamePanel.requestFocus();
 		if(!gameRunning){
 			if(InputManager.isKeyActive(InputManager.KEY_ESC)){
 				stopLogic();
 			}
+			if(selectMapGui.isEnable()){
+				if(InputManager.isKeyActive(InputManager.KEY_ENTER)){
+					action(Action.selectMap);
+				}
+				if(InputManager.isKeyActive(InputManager.KEY_RIGHT_ARROW)){
+					System.out.println("next song");
+					setCurrentSongIndex(getCurrentSongIndex()+1);
+					InputManager.forceFlushKeys();
+				}
+				else if(InputManager.isKeyActive(InputManager.KEY_LEFT_ARROW)){
+					setCurrentSongIndex(getCurrentSongIndex()-1);
+					InputManager.forceFlushKeys();
+				}
+				else if(InputManager.isKeyActive(InputManager.KEY_ENTER)){
+					action(Action.startGame);
+				}
+			}
 		}else{
 			gameLogic.runLogic();
+			selectMapGui.setEnable(true);
 			gameRunning=false;
 		}
 	}

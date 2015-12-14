@@ -1,6 +1,5 @@
 package engine.render;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -10,9 +9,7 @@ import flyerGame.engineExtension.Resources;
 
 public class RenderLayer{
 	public interface Renderable {
-		public default void render(Graphics g){
-			System.out.println(Thread.currentThread().getName());
-		}
+		public void render(Graphics g);
 	}
 	
 	private static int counterResetVale = 15;
@@ -48,15 +45,16 @@ public class RenderLayer{
 	}
 	
 	private ArrayList<Renderable> renderables;
-	
-	public ArrayList<Renderable> getRenderables() {
-		return renderables;
-	}
+
 	public void addRenderable(Renderable renderable) {
-		this.renderables.add(renderable);
+		synchronized (this) {
+			this.renderables.add(renderable);
+		}
 	}
 	public void removeRenderable(Renderable renderable) {
-		this.renderables.remove(renderable);
+		synchronized (this) {
+			this.renderables.remove(renderable);
+		}
 	}
 
 	void renderAll(Graphics g){
@@ -75,7 +73,9 @@ public class RenderLayer{
 			counter--;
 		}
 		else if(this.isVisible)
-			for(Renderable renderable : renderables)
-				renderable.render(g);
+			synchronized (this){
+				for(Renderable renderable : renderables)
+					renderable.render(g);
+			}
 	}
 }

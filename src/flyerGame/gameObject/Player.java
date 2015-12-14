@@ -55,8 +55,8 @@ public class Player extends FiringTarget{
 		Point p = InputManager.getMouseLocation();
 		if(p!=null){
 //			System.out.println(p);
-			this.setX(Range.normalize(p.x, Resources.trueScreenFieldX, Resources.screenFieldX));
-			this.setY(Range.normalize(p.y, Resources.trueScreenFieldY, Resources.screenFieldY));
+			this.setX(Range.normalize(p.x, Resources.trueScreenGameFieldX, Resources.gameFieldX));
+			this.setY(Range.normalize(p.y, Resources.trueScreenGameFieldY, Resources.gameFieldY));
 		}
 //		if(InputManager.isKeyActive(InputManager.LeftArrowKey)){
 //			setX(getX() - frameTime/200f);
