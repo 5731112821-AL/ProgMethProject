@@ -4,7 +4,7 @@ import engine.utilities.Cordinate3D;
 import engine.utilities.Range;
 
 /**
- * GameObject3D is currently unused in the Project
+ * @deprecated Not used in the Project.
  * @author BobbyL2k
  */
 public abstract class GameObject3D extends GameObject2D implements Cordinate3D{

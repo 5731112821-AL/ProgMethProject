@@ -17,6 +17,11 @@ import flyerGame.engineExtension.SystemLogic;
 import flyerGame.engineExtension.SystemLogic.Action;
 import flyerGame.main.SongIndexer.Song;
 
+/**
+ * Gui Class of the Main GUI Page
+ * (The welcome screen)
+ * @author L2k-nForce
+ */
 public class MainGui extends Gui {
 	
 

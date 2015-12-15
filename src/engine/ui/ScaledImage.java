@@ -14,6 +14,18 @@ public class ScaledImage implements Renderable {
 	private BufferedImage image;
 	private int x, y, /*width,*/ height;
 
+	/**
+	 * Is a {@link Renderable} object that automatically crops and
+	 * scale the inputed image to width and height.<br>
+	 * Do note that this implementation ignores the width parameter
+	 * and always crops a 4:3 ratio image with the height being the
+	 * inputed parameter
+	 * @param image
+	 * @param x
+	 * @param y
+	 * @param width (Is, as of right now, ignored)
+	 * @param height
+	 */
 	public ScaledImage(BufferedImage image, int x, int y, int width, int height) {
 		super();
 		this.x = x;
@@ -23,6 +35,13 @@ public class ScaledImage implements Renderable {
 		setImage(image);
 	}
 	
+	/**
+	 * Swap the old image with a new one 
+	 * and automatically crops according
+	 * to the value passed in from the 
+	 * constructor.
+	 * @param image
+	 */
 	public void setImage(BufferedImage image) {
 		if(image != null && (image.getWidth()-image.getHeight()*4/3) > 0){
 			int x = (image.getWidth()-image.getHeight()*4/3)/2;

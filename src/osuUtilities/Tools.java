@@ -10,6 +10,10 @@ import java.util.Collections;
 
 import org.apache.commons.lang3.ArrayUtils;
 
+/**
+ * This is not used in the project.
+ * @author L2k-nForce
+ */
 public class Tools {
 
 	public static class BinaryFileInputStream extends FileInputStream{

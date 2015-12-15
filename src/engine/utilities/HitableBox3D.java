@@ -1,5 +1,9 @@
 package engine.utilities;
 
+/**
+ * @deprecated Not used in the Project.
+ * @author L2k-nForce
+ */
 public interface HitableBox3D extends HitableBox2D, Cordinate3D{
 	
 	public Range getHitBoxXRange();

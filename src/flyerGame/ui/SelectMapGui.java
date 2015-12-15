@@ -17,6 +17,10 @@ import flyerGame.engineExtension.SystemLogic;
 import flyerGame.engineExtension.SystemLogic.Action;
 import flyerGame.main.SongIndexer.Song;
 
+/**
+ * Gui Class of the Map Selection GUI Page
+ * @author L2k-nForce
+ */
 public class SelectMapGui extends Gui {
 
 	private Button prevDiffButton, nextDiffButton, nextSongButton, prevSongButton, backButton, startButton;
