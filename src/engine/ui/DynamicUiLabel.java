@@ -9,12 +9,25 @@ import java.awt.Graphics2D;
 import engine.render.RenderLayer.Renderable;
 import flyerGame.engineExtension.Resources;
 
+/**
+ * Is a {@link UiLabel} where the string currently displayed,
+ * and the {@link Font} currently can be swap on-the-fly as a
+ * frame-per-frame render basis.
+ * <p>
+ * For dynamic string see {@link GetString}.<br>
+ * Dynamic {@link Font} can be achieved by overriding getFont method.
+ * @author L2k-nForce
+ */
 public class DynamicUiLabel implements Renderable {
 	
 	public enum Align{
 		left, right
 	}
 	
+	/**
+	 * An anonymous function that returns a {@link String} when called.
+	 * @author L2k-nForce
+	 */
 	public static interface GetString{
 		String getString();
 	}
@@ -25,6 +38,16 @@ public class DynamicUiLabel implements Renderable {
 	private Align align;
 	private Color color;
 
+	/**
+	 * @param getString is an anonymous function that returns a {@link String}
+	 * @param x is x-axis coordinate to render the string
+	 * @param y is y-axis coordinate to render the string
+	 * @param font is the font used to display the string,
+	 * can be swap later if need to. Can be passed in as null
+	 * swapping is used.
+	 * @param color is the color used to render the string.
+	 * @param align is the alignment of the string. Check {@link Align} for more info.
+	 */
 	public DynamicUiLabel(GetString getString, int x, int y, Font font, Color color, Align align) {
 		super();
 		this.getString = getString;
@@ -35,10 +58,19 @@ public class DynamicUiLabel implements Renderable {
 		this.color = color;
 	}
 	
+	/**
+	 * Is the method that can be override to provide
+	 * the render method a new {@link Font} as a Frame-per-frame
+	 * basis. The getFont is called after the stringReport method.
+	 * @return a Font to be used by render method 
+	 */
 	protected Font getFont() {
 		return this.font;
 	}
 	
+	/**
+	 * @param str is the string that is about to be drawn.
+	 */
 	protected void stringReport(String str) {
 	}
 	

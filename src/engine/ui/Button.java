@@ -9,8 +9,12 @@ import engine.render.SpriteMap;
 import engine.utilities.Range;
 
 /**
- * Button is a {@link VisibleObject} with a mouseListener.
- * It uses a {@link MiniMouseListener} and returns a {@link ScreenMouseListener}
+ * Is a {@link VisibleObject} with a mouseListener.
+ * It uses a {@link MouseListener} and returns a {@link ScreenMouseListener}
+ * <p>
+ * A {@link Button} has 4 states, normal, hover, clicked, and disabled<br>
+ * By assigning a {@link SpriteMap} with the same sequence, this class
+ * automatically loads the corresponding sprite according to the current state.
  * @author BobbyL2k
  */
 public class Button extends VisibleObject {
@@ -32,30 +36,52 @@ public class Button extends VisibleObject {
 			setState(3);
 	}
 	
+	/**
+	 * Forces hover state On/Off.
+	 * @param hover
+	 */
 	public void setHover(boolean hover) {
 		this.hover = hover;
 		updateState();
 	}
 
+	/**
+	 * Forces Enable/Disable button.
+	 * @param enable
+	 */
 	public void setEnable(boolean enable) {
 		this.enable = enable;
 		this.screenMouseListener.setActive(enable);
 		updateState();
 	}
 
+	/**
+	 * Forces clicked state On/Off.
+	 * @param clicked
+	 */
 	public void setClicked(boolean clicked) {
 		this.clicked = clicked;
 		updateState();
 	}
 
+	/**
+	 * @return {@link ScreenMouseListener} which correspond to the {@link Button}.
+	 */
 	public ScreenMouseListener getScreenMouseListener() {
 		return screenMouseListener;
 	}
 
+	/**
+	 * Set the zIndex of {@link ScreenMouseListener} of the {@link Button}
+	 * @param zIndex
+	 */
 	public void setZIndex(double zIndex) {
 		getScreenMouseListener().setzIndex(zIndex);
 	}
-	
+
+	/**
+	 * @return get the zIndex of {@link ScreenMouseListener} of the {@link Button}
+	 */
 	public double getZIndex() {
 		return getScreenMouseListener().getzIndex();
 	}

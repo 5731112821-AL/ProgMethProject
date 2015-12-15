@@ -5,17 +5,19 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 import engine.game.Logic.Updatable;
-import flyerGame.engineExtension.Resources;
+//import flyerGame.engineExtension.Resources;
 
 /**
- * GamePanel is used for all rendering in the Engine. This includes UI and game elements.
- * This is meant to be added directly to the {@link JFrame} of the application.
+ * Is used for all rendering in the Engine. This includes UI and game elements.
+ * This is meant to be added as sole {@link JComponent} in the {@link JFrame} of the application.
  * @author BobbyL2k
  */
 @SuppressWarnings("serial")
@@ -23,10 +25,12 @@ public class GamePanel extends JComponent implements Updatable{
 	
 	private Dimension dimension;
 	private ArrayList<RenderLayer> renderLayers;
+	private AffineTransform transform;
 	
 	/**
-	 * renderLayers - is initialized to an empty list
-	 * @param dimension - Dimension of the GamePanel
+	 * renderLayers is automatically initialized to an empty list
+	 * @param dimension is the dimension of the GamePanel
+	 * @param scale is used for scaling all contents on the GamePanel
 	 */
 	public GamePanel(Dimension dimension, float scale) {
 		this(dimension, new ArrayList<RenderLayer>(), scale);
@@ -40,6 +44,8 @@ public class GamePanel extends JComponent implements Updatable{
 		this.dimension = dimension;
 		this.setRenderLayers(renderLayers);
 		this.setPreferredSize(dimension);
+		this.transform = new AffineTransform();
+		transform.scale(scale, scale);
 	}
 	
 	@Override
@@ -54,7 +60,7 @@ public class GamePanel extends JComponent implements Updatable{
 		g2d.setBackground(Color.BLACK);
 		g2d.fillRect(0, 0, dimension.width, dimension.height);
 		
-		g2d.setTransform(Resources.scaledTransform);
+		g2d.setTransform(transform);
 		
 		if(renderLayers != null){
 			for (int i = 0; i < renderLayers.size(); i++) {
@@ -63,7 +69,10 @@ public class GamePanel extends JComponent implements Updatable{
 		}
 	}
 	
-	public ArrayList<RenderLayer> getRenderLayers() {
+	/**
+	 * @return List of {@link RenderLayer} assigned to be rendered.
+	 */
+	public List<RenderLayer> getRenderLayers() {
 		return renderLayers;
 	}
 

@@ -16,6 +16,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import engine.utilities.Range;
 import flyerGame.engineExtension.Resources;
 
+/**
+ * Handles inputs from {@link java.awt.Component}.
+ * Use To {@code addComponent()} to registers a {@link Component}.
+ * Do note that the {@link MouseListener} and {@link MouseMotionListener} event
+ * is <b>NOT</b> dispatched on AWT's and must be called with {@code executeAllMouseEvent()}.
+ * @author L2k-nForce
+ */
 public class InputManager {
 	private InputManager() {}
 	
@@ -23,6 +30,13 @@ public class InputManager {
 
 	private static Component latestComponent = null;
 	
+	/**
+	 * Registers a {@link Component} into the {@link InputManager}.
+	 * {@link InputManager} can register multiples {@link Component}
+	 * to centralize the input data. But the {@link MouseListener} and
+	 * {@link MouseMotionListener} will not have all the correct data.
+	 * @param comp a {@link Component} to register
+	 */
 	public static void addComponent(Component comp){
 		comp.addKeyListener(keyListener);
 		comp.addMouseListener(mouseListener);
@@ -43,7 +57,9 @@ public class InputManager {
 	private static boolean[] keyActive = new boolean[256];
 
 	/**
-	 * Resets all the keys to be inactive
+	 * Resets all the keys to be inactive.
+	 * This can be use to simulate a trigger-style
+	 * input event.
 	 */
 	public static void forceFlushKeys() {
 		for(int c=0; c<keyActive.length; c++){
@@ -51,13 +67,18 @@ public class InputManager {
 		}
 	}
 	
+	/**
+	 * Checks if the key is pressed. At the given time.
+	 * @param key is the same {@code int key} from {@code KeyListener setKeyActive()}
+	 * @return true if the key is pressed.
+	 */
 	public static boolean isKeyActive(int key) {
 //		synchronized (InputManager.keyActive) {
 			return InputManager.keyActive[key];	
 //		}
 	}
 	
-	public static final KeyListener keyListener = new KeyListener() {
+	private static final KeyListener keyListener = new KeyListener() {
 
 		private void setKeyActive(int key, boolean active) {
 			if(active != InputManager.keyActive[key])
@@ -84,8 +105,10 @@ public class InputManager {
 	};
 	
 	/**
-	 * {@link ScreenMouseListener} is a {@link MiniMouseListener}
-	 * with screen coordinates (Bounds) and Layer Depth (zIndex).
+	 * {@link ScreenMouseListener} is a {@link MouseListener}
+	 * with screen coordinates (Ranges) and Layer Depth (zIndex).
+	 * Do note that {@link MouseEvent} from {@link MouseListener}'s
+	 * Enter and Exit should not be used since it's inaccurate.
 	 * @author BobbyL2k
 	 */
 	public static class ScreenMouseListener{
@@ -96,6 +119,14 @@ public class InputManager {
 	
 		private boolean isActive;
 	
+		/**
+		 * @param mouseListener
+		 * @param boundX x-axis bounds in which the {@link ScreenMouseListener} is listening to.
+		 * @param boundY y-axis bounds in which the {@link ScreenMouseListener} is listening to.
+		 * @param zIndex Higher zIndex means that it is on top of the other
+		 * object with a lower zIndex value. Having a higher zIndex guarantees that a {@link MouseEvent}
+		 * will be dispatched to that {@link ScreenMouseListener}.
+		 */
 		public ScreenMouseListener(MouseListener mouseListener, Range boundX, Range boundY, double zIndex) {
 			this.mouseListener = mouseListener;
 			this.boundX = boundX;
@@ -109,11 +140,17 @@ public class InputManager {
 			return isActive;
 		}
 	
+		/**
+		 * Set {@link ScreenMouseListener} on and off.
+		 * If the {@link ScreenMouseListener} is inactive the mouse clicks
+		 * through to the other {@link ScreenMouseListener} with an equal or lower zIndex.
+		 * A {@link ScreenMouseListener} is on (active) by default.
+		 * @param isActive
+		 */
 		public void setActive(boolean isActive) {
 			this.isActive = isActive;
 		}
 		
-	
 		public double getzIndex() {
 			return zIndex;
 		}
@@ -132,15 +169,27 @@ public class InputManager {
 	private static AtomicBoolean mouseOnScreen = new AtomicBoolean(false);
 	private static AtomicBoolean mouseHoldDown = new AtomicBoolean(false);
 	
+	/**
+	 * @return true if the mouse is inside one of the registered Components.
+	 */
 	public static boolean isMouseOnScreen() {
 		return mouseOnScreen.get();
 	}
 	
+	/**
+	 * @return true if the mouse is hold down. (Between a click)
+	 */
 	public static boolean isMouseHoldDown() {
 		return mouseHoldDown.get();
 	}
 
-	static Thread mouseEnterChecker;
+	/**
+	 * To check if the mouse has entered a {@link ScreenMouseListener}.
+	 * {@link InputManager} creates and runs the mouseEnterChecker Thread
+	 * to do checking. If the mouse is not on screen, the Thread is suspended.
+	 * The Thread checks the mouse position and sleeps for {@link STD_SLEEP_TIME}.
+	 */
+	private static Thread mouseEnterChecker;
 	
 	static{
 		mouseEnterChecker = new Thread(new Runnable() {
@@ -169,19 +218,23 @@ public class InputManager {
 							MouseEvent e = new MouseEvent(latestComponent, 0, 0, 0, mousePoint.x, mousePoint.y, 0, 0, 0, false, 0);
 //							System.out.println("lastMouseListener " + lastMouseListener);
 							if(lastMouseListener != null){
-								pendingMouseEvents.add(
-										new PendingMouseEvent(
-											lastMouseListener.mouseListener,
-											e,
-											PendingMouseEvent.EventType.exited));
+								synchronized (pendingMouseEvents) {
+									pendingMouseEvents.add(
+											new PendingMouseEvent(
+												lastMouseListener.mouseListener,
+												e,
+												PendingMouseEvent.EventType.exited));
+								}
 							}
 							lastMouseListener = findMouseListenerAt(mousePoint.x, mousePoint.y);
 							if(lastMouseListener != null){
-								pendingMouseEvents.add(
-										new PendingMouseEvent(
-											lastMouseListener.mouseListener,
-											e,
-											PendingMouseEvent.EventType.entered));
+								synchronized (pendingMouseEvents) {
+									pendingMouseEvents.add(
+											new PendingMouseEvent(
+												lastMouseListener.mouseListener,
+												e,
+												PendingMouseEvent.EventType.entered));
+								}
 							}
 						} else { System.out.println( "lastComponent is null" ); }
 					}
@@ -218,18 +271,20 @@ public class InputManager {
 		return null;
 	}
 	
-	public static final MouseListener mouseListener = new MouseListener() {
+	private static final MouseListener mouseListener = new MouseListener() {
 		
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			Point location = e.getPoint();
 			ScreenMouseListener screenMouseListener = findMouseListenerAt((int)location.getX(), (int)location.getY()); 
 			if(screenMouseListener != null && screenMouseListener.mouseListener != null){
-				pendingMouseEvents.add(
-						new PendingMouseEvent(
-							screenMouseListener.mouseListener,
-							e,
-							PendingMouseEvent.EventType.click));
+				synchronized (pendingMouseEvents) {
+					pendingMouseEvents.add(
+							new PendingMouseEvent(
+								screenMouseListener.mouseListener,
+								e,
+								PendingMouseEvent.EventType.click));
+				}
 			}
 		}
 
@@ -240,11 +295,13 @@ public class InputManager {
 			System.out.println("Mouse Clicked At ("+location.getX()+","+location.getY()+")");
 			ScreenMouseListener screenMouseListener = findMouseListenerAt((int)location.getX(), (int)location.getY()); 
 			if(screenMouseListener != null && screenMouseListener.mouseListener != null){
-				pendingMouseEvents.add(
-						new PendingMouseEvent(
-							screenMouseListener.mouseListener,
-							e,
-							PendingMouseEvent.EventType.press));
+				synchronized (pendingMouseEvents) {
+					pendingMouseEvents.add(
+							new PendingMouseEvent(
+								screenMouseListener.mouseListener,
+								e,
+								PendingMouseEvent.EventType.press));
+				}
 			}
 		}
 
@@ -254,11 +311,13 @@ public class InputManager {
 			Point location = e.getPoint();
 			ScreenMouseListener screenMouseListener = findMouseListenerAt((int)location.getX(), (int)location.getY()); 
 			if(screenMouseListener != null && screenMouseListener.mouseListener != null){
-				pendingMouseEvents.add(
-						new PendingMouseEvent(
-							screenMouseListener.mouseListener,
-							e,
-							PendingMouseEvent.EventType.release));
+				synchronized (pendingMouseEvents) {
+					pendingMouseEvents.add(
+							new PendingMouseEvent(
+								screenMouseListener.mouseListener,
+								e,
+								PendingMouseEvent.EventType.release));
+				}
 			}
 		}
 		
@@ -290,13 +349,17 @@ public class InputManager {
 
 	private static Point mouseLocation = new Point();
 	
+	/**
+	 * @return The mouse's location on screen. This method is Thread safe.
+	 * Thus need not be used on {@link java.awt}'s Thread.
+	 */
 	public static Point getMouseLocation(){
 		synchronized (mouseLocation) {
 			return new Point(mouseLocation);
 		}
 	}
 	
-	public static final MouseMotionListener mouseMotionListener = new MouseMotionListener() {
+	private static final MouseMotionListener mouseMotionListener = new MouseMotionListener() {
 		@Override
 		public void mouseDragged(MouseEvent e) {
 			synchronized (mouseLocation) {
@@ -353,9 +416,18 @@ public class InputManager {
 	}
 	
 	private static List<PendingMouseEvent> pendingMouseEvents = new LinkedList<PendingMouseEvent>();
+	/**
+	 * Executes all the pending mouse events from AWT's 
+	 * Event Thread and {@link InputManager}'s {@code mouseEnterChecker} Thread.
+	 */
 	public static void executeAllMouseEvent(){
-		while(pendingMouseEvents.isEmpty() == false){
-			PendingMouseEvent event = pendingMouseEvents.remove(0);
+		while(true){
+			PendingMouseEvent event;
+			synchronized (pendingMouseEvents) {
+				if(pendingMouseEvents.isEmpty())
+					 break;
+				event = pendingMouseEvents.remove(0);
+			}
 			event.execute();
 		}
 	}
