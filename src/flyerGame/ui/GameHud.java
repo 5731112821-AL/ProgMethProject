@@ -7,10 +7,10 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 
 import engine.render.RenderLayer.Renderable;
+import engine.ui.Align;
 import engine.ui.Button;
 import engine.ui.DefaultedMouseListener;
 import engine.ui.DynamicUiLabel;
-import engine.ui.DynamicUiLabel.Align;
 import engine.ui.DynamicUiLabel.GetString;
 import flyerGame.engineExtension.GameLogic;
 import flyerGame.engineExtension.Resources;

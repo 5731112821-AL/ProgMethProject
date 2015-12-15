@@ -21,10 +21,6 @@ import flyerGame.engineExtension.Resources;
  */
 public class DynamicUiLabel implements Renderable {
 	
-	public enum Align{
-		left, right, center
-	}
-	
 	/**
 	 * An anonymous function that returns a {@link String} when called.
 	 * @author L2k-nForce

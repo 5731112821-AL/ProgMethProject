@@ -145,6 +145,7 @@ public class Resources {
 	public static AudioClip soundFxDrum;
 
 	public static InfiniteTile gameBackground;
+	public static BufferedImage scoreReportBackground;
 	public static SpriteMap backButton;
 
 	public static Font selectMapStandardFont, selectMapLargeFont, settingStandardFont, scoreFont;
@@ -158,6 +159,8 @@ public class Resources {
 					.getResource("res/images/game_background.png")));
 			backButton = new SpriteMap(ImageIO.read(loader.getResource(
 					spriteFolderPath + "back.png")), 3, 1);
+			scoreReportBackground = ImageIO.read(loader
+					.getResource("res/images/gameover_background.png"));
 
 			soundFxStart = Applet.newAudioClip((loader
 					.getResource("res/soundFX/gos.wav")));
@@ -187,8 +190,8 @@ public class Resources {
 			Font neon = Font.createFont(Font.TRUETYPE_FONT, loader.getResourceAsStream("res/fonts/NEON CLUB MUSIC.otf"));
 			Font neonBold = Font.createFont(Font.TRUETYPE_FONT, loader.getResourceAsStream("res/fonts/NEON CLUB MUSIC_bold.otf"));
 			selectMapStandardFont = neonBold.deriveFont(Font.BOLD, selectMapStandardFontSize);
-			selectMapLargeFont = neon.deriveFont(selectMapLargeFontSize);
-			settingStandardFont = neonBold.deriveFont(settingStandardFontSize);
+			selectMapLargeFont = neonBold.deriveFont(selectMapLargeFontSize);
+			settingStandardFont = neon.deriveFont(settingStandardFontSize);
 			scoreFont = neonBold.deriveFont(scoreFontSize);
 			System.out.println("Font Sucessfully loaded YAY !!!");
 		} catch (Exception e) {
@@ -223,7 +226,7 @@ public class Resources {
 	}
 
 	public static class MainGUI {
-		public static BufferedImage background;
+		public static BufferedImage background, logoCircle, logoText;
 		public static SpriteMap start, setting, credits, exit;
 		static {
 			try {
@@ -231,6 +234,10 @@ public class Resources {
 				String folderPath = "res/images/main_gui/";
 				background = ImageIO.read(loader.getResource(folderPath
 						+ "main_background.png"));
+				logoCircle = ImageIO.read(loader.getResource(folderPath
+						+ "logo_circle.png"));
+				logoText = ImageIO.read(loader.getResource(folderPath
+						+ "logo_text.png"));
 				start = new SpriteMap(ImageIO.read(loader.getResource(
 						folderPath + "main_start.png")), 3, 1);
 				setting = new SpriteMap(ImageIO.read(loader.getResource(
@@ -254,7 +261,7 @@ public class Resources {
 
 	public static class SelectMapGUI {
 		public static BufferedImage background, tag;
-		public static SpriteMap rightArrow, leftArrow, sideArrow, back;
+		public static SpriteMap rightArrow, leftArrow, naviRight, naviLeft, back, start;
 		static {
 			try {
 				System.out.print("Loading SelectMapGUI data...");
@@ -263,8 +270,10 @@ public class Resources {
 						+ "selectmap_background.png"));
 				tag = ImageIO.read(loader.getResource(folderPath
 						+ "selectmap_tag.png"));
-				sideArrow = new SpriteMap(ImageIO.read(loader
-						.getResource(spriteFolderPath + "nevigator.png")), 3, 1);
+				naviRight = new SpriteMap(ImageIO.read(loader
+						.getResource(spriteFolderPath + "navi_right.png")), 3, 1);
+				naviLeft = new SpriteMap(ImageIO.read(loader
+						.getResource(spriteFolderPath + "navi_left.png")), 3, 1);
 				rightArrow = new SpriteMap(ImageIO.read(loader
 						.getResource(spriteFolderPath
 								+ "selectmap_rightarrow.png")), 4, 1);
@@ -272,11 +281,13 @@ public class Resources {
 						.getResource(spriteFolderPath
 								+ "selectmap_arrowleft.png")), 4, 1);
 				back = backButton;
+				start = loadSpriteMap(spriteFolderPath+"selectmap_sprite.png", 3, 1);
 				System.out.println("Sucess!!!");
 			} catch (IOException e) {
 				background = null;
 				tag = null;
-				sideArrow = null;
+				naviRight = null;
+				naviLeft = null;
 				back = null;
 				System.out.println("Failed");
 				e.printStackTrace();
@@ -344,12 +355,30 @@ public class Resources {
 	 */
 	public static List<Song> songs;
 
+	private static long songStartTime;
+	private static Song songPlaying = null;
+
+	public static Song getSongPlaying() {
+		return songPlaying;
+	}
+
+	public static long getSongStartTime() {
+		return songStartTime;
+	}
+	
+	public static long songPlayedfor() {
+		return System.currentTimeMillis() - songStartTime;
+	}
+
 	public static void play(Song song) {
 		Resources.loadBeatmapAudioClip(song.folderPath + song.songName).play();
+		songStartTime = System.currentTimeMillis();
+		songPlaying = song;
 	}
 
 	public static void stop(Song song) {
 		Resources.loadBeatmapAudioClip(song.folderPath + song.songName).stop();
+		songPlaying = null;
 	}
 	
 	public static BufferedImage loadBeatmapImage(Song song) {

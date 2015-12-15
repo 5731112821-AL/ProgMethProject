@@ -5,10 +5,10 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import engine.render.GamePanel;
+import engine.ui.Align;
 import engine.ui.Button;
 import engine.ui.DefaultedMouseListener;
 import engine.ui.DynamicUiLabel;
-import engine.ui.DynamicUiLabel.Align;
 import engine.ui.DynamicUiLabel.GetString;
 import engine.ui.UiLabel;
 import engine.ui.VisibleObject;

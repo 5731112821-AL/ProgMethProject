@@ -37,7 +37,7 @@ public class CreditsGui extends Gui{
 		
 		background = new VisibleObject(Resources.CreditsGUI.background, offset, 0, 0, 0);
 		renderablesToAdd.add(background);
-		script = new MovingBackground(new InfiniteTile(Resources.CreditsGUI.script), 0, 0.01f, -offset, 0);
+		script = new MovingBackground(new InfiniteTile(Resources.CreditsGUI.script), 0, 0.02f, -offset, 0);
 		renderablesToAdd.add(script);
 		systemLogic.addObjectNextTick(script);
 		

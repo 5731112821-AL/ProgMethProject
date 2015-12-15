@@ -36,7 +36,6 @@ public class GameLogic extends engine.game.Logic {
 	private GamePanel gamePanel;
 	private List<HitCircle> hitCircles = null;
 	private Song song = null;
-	private long songStartTime;
 	private GameHud gameHud;
 	
 	public GameLogic(GamePanel gamePanel, Song song, OsuBeatmap beatmap) {
@@ -65,7 +64,6 @@ public class GameLogic extends engine.game.Logic {
 		}else{
 			System.out.println("Song not found");
 		}
-		songStartTime = System.currentTimeMillis();
 		
 		// GRID
 //		addObjectNextTick(new RenderLayer.Renderable() {
@@ -146,6 +144,7 @@ public class GameLogic extends engine.game.Logic {
 	}
 	
 	int recoverCountdown = 0;
+	int closeCountdown = 0;
 	
 	@Override
 	protected void logicLoop(long frameTime) {
@@ -156,7 +155,7 @@ public class GameLogic extends engine.game.Logic {
 			return;
 		}
 		
-		long currentSongTime = System.currentTimeMillis() - songStartTime;
+		long currentSongTime = System.currentTimeMillis() - Resources.getSongStartTime();
 		if(hitCircles != null){
 			while(hitCircleToAddCounter < hitCircles.size()){
 				HitCircle currentHitCircleToAdd = hitCircles.get(hitCircleToAddCounter);
@@ -181,8 +180,8 @@ public class GameLogic extends engine.game.Logic {
 				}
 				else break;
 			}
-			if(hitCircleToPlaySoundCounter >= hitCircles.size() && hitCircleToAddCounter >= hitCircles.size()){
-				requestClose();
+			if(hitCircleToAddCounter >= hitCircles.size() && targetList.size()==1 && closeCountdown == 0){
+				closeCountdown = 4000; // Countdown 4 seconds
 			}
 		}
 		
@@ -197,7 +196,12 @@ public class GameLogic extends engine.game.Logic {
 				
 			}
 		}
-		
+		if(closeCountdown > 0){
+			closeCountdown -= frameTime;
+			if(closeCountdown <= 0){
+				requestClose();
+			}
+		}
 		if(recoverCountdown > frameTime){
 			recoverCountdown -= frameTime;
 		}else{

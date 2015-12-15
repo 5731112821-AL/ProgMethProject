@@ -5,6 +5,8 @@ import java.awt.Graphics2D;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
+import engine.ui.Align;
+
 /**
  * Handles rendering Sprite Map (An Image with multiple Sprite)
  * @author L2k-nForce
@@ -56,7 +58,7 @@ public class SpriteMap {
 	 * Total_Number_Of_Sprite-1.
 	 */
 	public void render(Graphics g, int x, int y, AffineTransformOp affineTransformOp, int index) {
-		render(g, x, y, affineTransformOp, index, false);
+		render(g, x, y, affineTransformOp, index, Align.left);
 	}
 
 	/**
@@ -71,12 +73,12 @@ public class SpriteMap {
 	 * @param center if <b>true</b> the sprite is draw with x, y being at
 	 * the <b>center</b> of the sprite instead of the top left.
 	 */
-	public void render(Graphics g, int x, int y, AffineTransformOp affineTransformOp, int index, boolean center) {
+	public void render(Graphics g, int x, int y, AffineTransformOp affineTransformOp, int index, Align align) {
 		if(index < 0){
 			index = 0;
 			System.out.println("Alert negative index input for SpriteMap");
 		}
-		render(g, x, y, affineTransformOp, index, index / columns, center);
+		render(g, x, y, affineTransformOp, index, index / columns, align);
 	}
 
 	/**
@@ -90,7 +92,7 @@ public class SpriteMap {
 	 * @param indexY is the index of the row, starts at 0 to row-1
 	 */
 	public void render(Graphics g, int x, int y, AffineTransformOp affineTransformOp, int indexX, int indexY) {
-		render(g, x, y, affineTransformOp, indexX, indexY, false);
+		render(g, x, y, affineTransformOp, indexX, indexY, Align.left);
 	}
 
 	/**
@@ -105,15 +107,17 @@ public class SpriteMap {
 	 * @param center if <b>true</b> the sprite is draw with x, y being at
 	 * the <b>center</b> of the sprite instead of the top left.
 	 */
-	public void render(Graphics g, int x, int y, AffineTransformOp affineTransformOp, int indexX, int indexY, boolean center) {
+	public void render(Graphics g, int x, int y, AffineTransformOp affineTransformOp, int indexX, int indexY, Align align) {
 		indexX = indexX % columns;
 		indexY = indexY % rows;
 		Graphics2D g2 = (Graphics2D)g;
 		BufferedImage sprite = image.getSubimage(indexX*this.width, indexY*this.height, this.width, this.height);
-		if(center)
-			g2.drawImage(sprite, affineTransformOp, x-width/2, y-height/2);
-		else
+		if(align == Align.left)
 			g2.drawImage(sprite, affineTransformOp, x, y);
+		else if(align == Align.center)
+			g2.drawImage(sprite, affineTransformOp, x-this.width/2, y-this.height/2);
+		else
+			g2.drawImage(sprite, affineTransformOp, x-this.width, y-this.height);
 	}
 
 }

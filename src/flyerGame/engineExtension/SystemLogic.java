@@ -11,14 +11,16 @@ import flyerGame.main.SongIndexer.Song;
 import flyerGame.ui.CreditsGui;
 import flyerGame.ui.Gui;
 import flyerGame.ui.MainGui;
+import flyerGame.ui.ScoreReportGui;
 import flyerGame.ui.SelectMapGui;
 import flyerGame.ui.SettingGui;
 
 public class SystemLogic extends engine.game.Logic {
 	
-	private static final int TARGET_FPS = 60;
+	private static final int TARGET_FPS = 40;
 	
-	private Gui mainGui, settingGui, creditsGui; 
+	private Gui mainGui, settingGui, creditsGui;
+	private ScoreReportGui scoreReportGui;
 	private SelectMapGui selectMapGui;
 	private GamePanel gamePanel;
 	private boolean gameRunning;
@@ -97,6 +99,7 @@ public class SystemLogic extends engine.game.Logic {
 			settingGui.updateRenderableStates();
 			creditsGui.updateRenderableStates();
 			selectMapGui.updateRenderableStates();
+			scoreReportGui.updateRenderableStates();
 			break;
 
 		case credits:
@@ -107,10 +110,16 @@ public class SystemLogic extends engine.game.Logic {
 
 		case back:
 			System.out.println("Back");
-			settingGui.setEnable(false);
-			creditsGui.setEnable(false);
-			selectMapGui.setEnable(false);
-			mainGui.setEnable(true);
+			if(scoreReportGui.isEnable()){
+				selectMapGui.setEnable(true);
+				scoreReportGui.setEnable(false);
+			}
+			else{
+				settingGui.setEnable(false);
+				creditsGui.setEnable(false);
+				selectMapGui.setEnable(false);
+				mainGui.setEnable(true);
+			}
 			break;
 
 		case exit:
@@ -136,8 +145,17 @@ public class SystemLogic extends engine.game.Logic {
 		gamePanelRenderLayers.add(creditsGui.getRenderLayer());
 		selectMapGui = new SelectMapGui(this);
 		gamePanelRenderLayers.add(selectMapGui.getRenderLayer());
+		scoreReportGui = new ScoreReportGui(this);
+		gamePanelRenderLayers.add(scoreReportGui.getRenderLayer());
 
 		mainGui.setEnable(true);
+		
+		if(Resources.debugMode){
+			mainGui.setEnable(false);
+			scoreReportGui.setEnable(true);
+			scoreReportGui.setMaxComboValue(1000);
+			scoreReportGui.setScoreValue(1000000);
+		}
 	}
 	
 	@Override
@@ -176,8 +194,9 @@ public class SystemLogic extends engine.game.Logic {
 			}
 		}else{
 			gameLogic.runLogic();
-			selectMapGui.setEnable(true);
-//			scoreReportGui.setEnable(true); // TODO
+			scoreReportGui.setEnable(true);
+			scoreReportGui.setMaxComboValue(gameLogic.getMaxCombo());
+			scoreReportGui.setScoreValue(gameLogic.getScore());
 			gameRunning=false;
 		}
 	}

@@ -34,6 +34,16 @@ public class OsuBeatmap {
 		}
 	}
 	
+	public static class Beats {
+		public double mpb, offset;
+
+		public Beats(double mpb, double offset) {
+			super();
+			this.mpb = mpb;
+			this.offset = offset;
+		}
+	}
+	
 	public static class HitCircle {
 		public int x, y, time;
 
@@ -52,6 +62,7 @@ public class OsuBeatmap {
 	}
 	
 	public ArrayList<HitCircle> hitCircles = new ArrayList<HitCircle>();
+	public ArrayList<Beats> beats = new ArrayList<OsuBeatmap.Beats>();
 	public Map<String,Map<String,String>> data = new TreeMap<String, Map<String,String>>();
 	
 	public OsuBeatmap(File beatmapFile) throws IOException {
@@ -96,6 +107,16 @@ public class OsuBeatmap {
 										Integer.parseInt(parts[1]), 
 										Integer.parseInt(parts[2])
 										));
+					}
+				}
+			} else if(lines[0].compareTo("TimingPoints") == 0){
+				for(int c=1; c<lines.length; c++){
+					String[] parts = lines[c].split(","); 
+					if(parts.length > 2){
+						beats.add(
+								new Beats(
+										Double.parseDouble(parts[0]), 
+										Double.parseDouble(parts[1])));
 					}
 				}
 			} else if(lines[0].compareTo("Events") == 0){

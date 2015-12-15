@@ -6,6 +6,7 @@ import java.awt.geom.AffineTransform;
 import java.util.Map;
 
 import osuUtilities.OsuBeatmap;
+import engine.ui.Align;
 import engine.ui.Button;
 import engine.ui.DefaultedMouseListener;
 import engine.ui.ScaledImage;
@@ -18,7 +19,7 @@ import flyerGame.main.SongIndexer.Song;
 
 public class SelectMapGui extends Gui {
 
-	private Button prevDiffButton, nextDiffButton, nextSongButton, backButton;
+	private Button prevDiffButton, nextDiffButton, nextSongButton, prevSongButton, backButton, startButton;
 	private UiLabel songName, artistName, creatorName, beatmapName;
 	private VisibleObject background, tag;
 	private int songIndex;
@@ -32,7 +33,9 @@ public class SelectMapGui extends Gui {
 		background.setScreenX(offset);
 		tag.setScreenX(880+offset);
 		backButton.setScreenX(820+offset);
-		nextSongButton.setScreenX(850+offset);
+		startButton.setScreenX(1510+offset);
+		nextSongButton.setScreenX(840+offset);
+		prevSongButton.setScreenX(840+offset);
 		nextDiffButton.setScreenX(706+offset);
 		prevDiffButton.setScreenX(370+offset);
 
@@ -41,7 +44,7 @@ public class SelectMapGui extends Gui {
 		preview[2].setX(1255+offset);
 		preview[3].setX(1600+offset);
 
-		songName.setX(1010+offset);
+		songName.setX(1000+offset);
 		artistName.setX(1150+offset);
 		creatorName.setX(1150+offset);
 		
@@ -57,14 +60,29 @@ public class SelectMapGui extends Gui {
 			}
 		});
 		buttons.add(backButton);
+		startButton = new Button(Resources.SelectMapGUI.start, 1510+offset, 610, new DefaultedMouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				systemLogic.action(Action.startGame);
+			}
+		});
+		buttons.add(startButton);
 
-		nextSongButton = new Button(Resources.SelectMapGUI.sideArrow, 850+offset, 355, new DefaultedMouseListener() {
+		nextSongButton = new Button(Resources.SelectMapGUI.naviRight, 840+offset, 280, new DefaultedMouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				systemLogic.setCurrentSongIndex(systemLogic.getCurrentSongIndex()+1);
 			}
 		});
 		buttons.add(nextSongButton);
+
+		prevSongButton = new Button(Resources.SelectMapGUI.naviLeft, 840+offset, 400, new DefaultedMouseListener() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				systemLogic.setCurrentSongIndex(systemLogic.getCurrentSongIndex()-1);
+			}
+		});
+		buttons.add(prevSongButton);
 
 		nextDiffButton = new Button(Resources.SelectMapGUI.rightArrow, 706+offset, 780, new DefaultedMouseListener() {
 			@Override
@@ -101,7 +119,7 @@ public class SelectMapGui extends Gui {
 		preview[3] = new ScaledImage(null, 1600+offset, 285, 324, 243);
 		renderablesToAdd.add(preview[3]);
 		
-		songName = new UiLabel("", 1010+offset ,745, Resources.selectMapLargeFont);
+		songName = new UiLabel("", 1000+offset ,745, Resources.selectMapLargeFont, Resources.fontColor, 620);
 		renderablesToAdd.add(songName);
 		artistName = new UiLabel("", 1150+offset ,790, Resources.selectMapStandardFont);
 		renderablesToAdd.add(artistName);
@@ -166,8 +184,9 @@ public class SelectMapGui extends Gui {
 			this.songIndex = index;
 			setBeatmapIndex(0);
 		}
-		
+
 		nextSongButton.setEnable(index < Resources.songs.size()-1);
+		prevDiffButton.setEnable(index > 0);
 		imageReload();
 		textReload();
 	}

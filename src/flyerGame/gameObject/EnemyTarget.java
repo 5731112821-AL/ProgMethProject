@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import engine.render.SpriteMap;
+import engine.ui.Align;
 import engine.utilities.Range;
 import flyerGame.engineExtension.Resources;
 
@@ -89,14 +90,14 @@ public class EnemyTarget extends Target{
 		int x = (int) Range.normalize(getX(), Resources.gameFieldX, Resources.virtualScreenGameFieldX);
 		int y = (int) Range.normalize(getY(), Resources.gameFieldY, Resources.virtualScreenGameFieldY);
 		if(isDestoryed){
-			spriteMap.render(g, x, y, null, 23-destoryTime/2, true);
+			spriteMap.render(g, x, y, null, 23-destoryTime/2, Align.center);
 			destoryTime--;
 			if(destoryTime == -1)
 				super.destory();
 		} else {
 			synchronized (this) {
 				int currentframe = (int) Range.map(Math.min(diffTime, timing.min), timing, frameCount);
-				spriteMap.render(g, x, y, null, currentframe, true);
+				spriteMap.render(g, x, y, null, currentframe, Align.center);
 			}
 		}
 		if(Resources.debugMode){
