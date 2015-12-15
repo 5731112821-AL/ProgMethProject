@@ -9,6 +9,10 @@ import engine.ui.Align;
 import engine.utilities.Range;
 import flyerGame.engineExtension.Resources;
 
+/**
+ * Is the class of the Enemy on screen.
+ * @author L2k-nForce
+ */
 public class EnemyTarget extends Target{
 	
 	private static float speedY = Resources.gameSpeed;
@@ -30,6 +34,12 @@ public class EnemyTarget extends Target{
 	
 	private long diffTime;
 	
+	/**
+	 * @param healthPoint is the amount of health the {@link EnemyTarget} has.
+	 * @param x X-axis position
+	 * @param y X-axis position
+	 * @param diffTime is the amount of time before the EnemyTarget should activate.
+	 */
 	public EnemyTarget(int healthPoint, float x, float y, long diffTime) {
 		super(healthPoint, x, y, Resources.gameFieldExX, enemyField);
 		this.diffTime = diffTime;
@@ -56,6 +66,10 @@ public class EnemyTarget extends Target{
 	
 	private boolean destoryedByLeavingTheScreen = false;
 	
+	/**
+	 * @return true if the {@link EnemyTarget} isDestoryedByLeavingTheScreen
+	 * (not from being shot down).
+	 */
 	public boolean isDestoryedByLeavingTheScreen() {
 		return destoryedByLeavingTheScreen;
 	}

@@ -9,6 +9,10 @@ import engine.utilities.Moving2D;
 import engine.utilities.Range;
 import flyerGame.engineExtension.Resources;
 
+/**
+ * Is a {@link Moving2D} object that has a {@link HitableBox2D}
+ * @author L2k-nForce
+ */
 public class Bullet extends Target implements HitableBox2D, Moving2D {
 	
 	private float speedX, speedY;
@@ -17,18 +21,60 @@ public class Bullet extends Target implements HitableBox2D, Moving2D {
 
 	private static float DEFAULT_BULLET_SIZE = 0.1f;
 
+
+	/**
+	 * A {@link Bullet} will not Hit its parent<br>
+	 * The hitBox size in default to DEFAULT_BULLET_SIZE = 0.1f
+	 * @param parent
+	 * @param hitPoint the damage inflicted when a {@link Target} is hit
+	 * @param x X-axis position
+	 * @param y X-axis position
+	 * @param speedX rate of x changing per millisecond
+	 * @param speedY rate of y changing per millisecond
+	 */
 	public Bullet(Class<? extends Target> parent, int hitPoint, float x, float y, float speedX, float speedY) {
 		this(parent, hitPoint, x, y, speedX, speedY, DEFAULT_BULLET_SIZE);
 	}
-	
+
+	/**
+	 * A {@link Bullet} will not Hit its parent
+	 * @param parent
+	 * @param hitPoint the damage inflicted when a {@link Target} is hit
+	 * @param x X-axis position
+	 * @param y X-axis position
+	 * @param speedX rate of x changing per millisecond
+	 * @param speedY rate of y changing per millisecond
+	 * @param hitBoxSize size of the hitBox
+	 */
 	public Bullet(Class<? extends Target> parent, int hitPoint, float x, float y, float speedX, float speedY, float hitBoxSize) {
 		this(parent, hitPoint, x, y, speedX, speedY, new Range(-hitBoxSize/2, hitBoxSize/2));
 	}
-	
+
+	/**
+	 * A {@link Bullet} will not Hit its parent
+	 * @param parent
+	 * @param hitPoint the damage inflicted when a {@link Target} is hit
+	 * @param x X-axis position
+	 * @param y X-axis position
+	 * @param speedX rate of x changing per millisecond
+	 * @param speedY rate of y changing per millisecond
+	 * @param hitBoxRange X & Y -axis Range of the bullet's HitBox
+	 */
 	public Bullet(Class<? extends Target> parent, int hitPoint, float x, float y, float speedX, float speedY, Range hitBoxRange) {
 		this(parent, hitPoint, x, y, speedX, speedY, hitBoxRange, hitBoxRange);
 	}
 
+	/**
+	 * A {@link Bullet} will not Hit its parent
+	 * @param parent
+	 * @param hitPoint the damage inflicted when a {@link Target} is hit
+	 * @param x X-axis position
+	 * @param y X-axis position
+	 * @param speedX rate of x changing per millisecond
+	 * @param speedY rate of y changing per millisecond
+	 * @param hbX X-axis Range of the bullet's HitBox
+	 * @param hbY Y-axis Range of the bullet's HitBox
+	 */
 	public Bullet(Class<? extends Target> parent, int hitPoint, float x, float y, float speedX, float speedY, Range hbX, Range hbY) {
 		super(hitPoint, x, y, Resources.gameFieldExX, Resources.gameFieldExY);
 		this.parent = parent;
@@ -38,6 +84,11 @@ public class Bullet extends Target implements HitableBox2D, Moving2D {
 		this.hbY = hbY;
 	}
 	
+	/**
+	 * Reduces the Target health with its hitPoint
+	 * and destroys itself.
+	 * @param obj
+	 */
 	public void hit(Target obj){
 		System.out.println("Bullet hitting "+obj);
 		obj.damage(this.getHitPoint());
@@ -102,6 +153,13 @@ public class Bullet extends Target implements HitableBox2D, Moving2D {
 			renderHitBox(g, Color.YELLOW);
 	}
 
+	/**
+	 * @return the HitPoint of the {@link Bullet}
+	 * (or How much damage will the Bullet inflict)
+	 * <p>
+	 * the HitPoint System is implemented with the
+	 * HealthPoint from its super class, {@link Target}.
+	 */
 	public int getHitPoint() {
 		return getHealthPoint();
 	}

@@ -11,16 +11,32 @@ import flyerGame.engineExtension.GameLogic;
 import flyerGame.engineExtension.Resources;
 import flyerGame.factory.BulletFactory;
 
+/**
+ * Is a {@link Target} that the player (user)
+ * controls.
+ * @author L2k-nForce
+ */
 public class Player extends FiringTarget{
 	
 	private float width,height;
 	private static long FIRE_COOL_DOWN = 100;
 	private BulletFactory bulletFactory;
 	
+	/**
+	 * @param gameLogic is from {@link FiringTarget}
+	 */
 	public Player(GameLogic gameLogic) {
 		this(100, 3, 5, gameLogic);
 	}
 
+	/**
+	 * health, x, y is from {@link Target} and
+	 * gameLogic is from {@link FiringTarget}
+	 * @param health
+	 * @param x
+	 * @param y
+	 * @param gameLogic
+	 */
 	public Player(int health, float x, float y, GameLogic gameLogic) {
 		super(health, x, y, gameLogic);//, Resources.gameField, Resources.gameField);
 		this.width = 1;
