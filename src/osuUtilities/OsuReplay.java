@@ -5,6 +5,10 @@ import java.io.IOException;
 
 import osuUtilities.Tools.BinaryFileInputStream;
 
+/**
+ * This is not used in the project.
+ * @author L2k-nForce
+ */
 public class OsuReplay {
 
 	public static void main(String[] args) {

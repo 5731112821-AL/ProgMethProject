@@ -55,10 +55,18 @@ public class DynamicUiLabel implements Renderable {
 		this.color = color;
 	}
 	
+	/**
+	 * Sets the y coordinate (Screen Coordinate)
+	 * @param y
+	 */
 	public void setY(int y) {
 		this.y = y;
 	}
 
+	/**
+	 * Sets the x coordinate (Screen Coordinate)z
+	 * @param x
+	 */
 	public void setX(int x) {
 		this.x = x;
 	}

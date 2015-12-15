@@ -15,6 +15,11 @@ import engine.ui.DynamicUiLabel.GetString;
 import flyerGame.engineExtension.GameLogic;
 import flyerGame.engineExtension.Resources;
 
+/**
+ * Gui Class of the in-game Hud.
+ * This Gui class has no background.
+ * @author L2k-nForce
+ */
 public class GameHud extends Gui {
 
 	Button closeButton;

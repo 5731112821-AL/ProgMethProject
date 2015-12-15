@@ -10,6 +10,11 @@ import java.util.TreeMap;
 
 public class OsuBeatmap {
 	
+	/**
+	 * @deprecated <br>
+	 * This main function is used for testing the Class
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		File file = new File("res/APG550 - NEVERLAND (Natsu) [Advanced].osu");
 		
@@ -34,6 +39,13 @@ public class OsuBeatmap {
 		}
 	}
 	
+	/**
+	 * Stores the beats of the song. <br>
+	 * Contains mpb (millisecond per beat)
+	 * and offset (startong time in which
+	 * the mpb applies to.
+	 * @author L2k-nForce
+	 */
 	public static class Beats {
 		public double mpb, offset;
 
@@ -44,6 +56,11 @@ public class OsuBeatmap {
 		}
 	}
 	
+	/**
+	 * Stores HitCircle data <br>
+	 * Contains x, y, time
+	 * @author L2k-nForce
+	 */
 	public static class HitCircle {
 		public int x, y, time;
 
@@ -65,10 +82,22 @@ public class OsuBeatmap {
 	public ArrayList<Beats> beats = new ArrayList<OsuBeatmap.Beats>();
 	public Map<String,Map<String,String>> data = new TreeMap<String, Map<String,String>>();
 	
+	/**
+	 * Open Osu Beatmap file and stores the file data
+	 * inside the object.
+	 * @param beatmapFile
+	 * @throws IOException
+	 */
 	public OsuBeatmap(File beatmapFile) throws IOException {
 		this(new FileInputStream(beatmapFile));
 	}
 	
+	/**
+	 * Read Osu Beatmap (file)inputStream and stores the
+	 * data inside the object.
+	 * @param inputStream
+	 * @throws IOException
+	 */
 	public OsuBeatmap(InputStream inputStream) throws IOException {
 		String fileContent = "";
 		int b;

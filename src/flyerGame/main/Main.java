@@ -15,6 +15,13 @@ public class Main {
 	public static GamePanel gamePanel;
 	
 	
+	/**
+	 * Creates {@link JFrame}, {@link GamePanel}, {@link SystemLogic}<br>
+	 * And start running {@link SystemLogic} after finished initializing 
+	 * the game. <br>
+	 * Once {@link SystemLogic} returns the application is cloesed.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		
 		System.out.println("Game Start");

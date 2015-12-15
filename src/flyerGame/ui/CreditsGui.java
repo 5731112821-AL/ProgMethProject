@@ -11,6 +11,10 @@ import flyerGame.engineExtension.Resources;
 import flyerGame.engineExtension.SystemLogic;
 import flyerGame.engineExtension.SystemLogic.Action;
 
+/**
+ * Gui Class of the Credits GUI Page
+ * @author L2k-nForce
+ */
 public class CreditsGui extends Gui{
 
 	private Button backButton;

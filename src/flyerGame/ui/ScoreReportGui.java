@@ -13,6 +13,11 @@ import flyerGame.engineExtension.Resources;
 import flyerGame.engineExtension.SystemLogic;
 import flyerGame.engineExtension.SystemLogic.Action;
 
+/**
+ * Gui Class of the Score Report GUI Page
+ * (The Gameover Page)
+ * @author L2k-nForce
+ */
 public class ScoreReportGui extends Gui{
 
 	private Button backButton;

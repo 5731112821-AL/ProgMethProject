@@ -15,8 +15,20 @@ import org.apache.commons.io.FilenameUtils;
 
 import osuUtilities.OsuBeatmap;
 
+/**
+ * This class is not in the runtime as it
+ * is used to do indexing for the {@link OsuBeatmap}
+ * files that is going to be later loaded with a
+ * classLoader.
+ * @author L2k-nForce
+ */
 public class SongIndexer {
 	
+	/**
+	 * Is Object storing the file name and location of
+	 * each song and beatmaps.
+	 * @author L2k-nForce
+	 */
 	public static class Song implements Serializable{
 		private static final long serialVersionUID = -279552873668684874L;
 		public String songName = "";
@@ -32,6 +44,12 @@ public class SongIndexer {
 
 	private static List<Song> songs = new ArrayList<SongIndexer.Song>();
 	
+	/**
+	 * This is run once, after adding
+	 * songs to the res/song folder in the project.<br>
+	 * This main method is not part of the runtime.
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		try{
 			index();

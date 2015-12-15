@@ -17,15 +17,11 @@ import flyerGame.engineExtension.SystemLogic;
 import flyerGame.engineExtension.SystemLogic.Action;
 import flyerGame.main.Main;
 
+/**
+ * Gui Class of the Setting GUI Page
+ * @author L2k-nForce
+ */
 public class SettingGui extends Gui {
-	
-	/*
-	private int currentRatioOption,currentResolutionOption;
-	private static final int[] SCREEN_HEIGHT_FOR_4_3 = {480,600,768,864,960,1050};
-	private static final int[] SCREEN_HEIGHT_FOR_16_9= {480,720,768,900,1080};
-	private Button leftRatioButton , rightRatioButton,leftResolutionButton,rightResolutionButton;
-	private UiLabel ratioSetting,resolutionSetting;
-	*/
 	
 	private int offset = Resources.globalOffset;
 	private SystemLogic systemLogic;
@@ -143,6 +139,7 @@ public class SettingGui extends Gui {
 		protected Button nextButton, prevButton;
 		
 		public int indexNum;
+		
 		public void updateRenderableStates(){
 			prevButton.setEnable(indexs[this.indexNum]>0);
 			nextButton.setEnable(indexs[this.indexNum]<options[this.indexNum].length-1);
