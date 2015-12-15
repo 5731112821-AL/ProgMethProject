@@ -67,7 +67,6 @@ public class SongIndexer {
 				for(File file : songFolder.listFiles()){
 					String fileName = file.getName();
 					if(FilenameUtils.getExtension(fileName).compareTo("osu") == 0){
-						song.beatmapNames.add(fileName);
 						OsuBeatmap beatmap = new OsuBeatmap(file);
 						String songName = beatmap.data.get("General").get("AudioFilename");
 						{
@@ -77,10 +76,14 @@ public class SongIndexer {
 								correctedSongName += chunks[c]+".";
 							}
 							correctedSongName += "wav";
-							System.out.println(correctedSongName);
+//							System.out.println(correctedSongName);
 							songName = correctedSongName;
 						}
 						song.songName = songName;
+						if(beatmap.data.get("General").get("Mode").compareTo("0") == 0){
+							song.beatmapNames.add(fileName);
+							System.out.println("Added "+fileName);
+						}
 					}
 				}
 				if(song.songName.length() != 0 && song.folderPath.length() != 0 && song.beatmapNames.size() != 0){

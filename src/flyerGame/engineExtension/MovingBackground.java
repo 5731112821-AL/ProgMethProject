@@ -26,6 +26,22 @@ public class MovingBackground implements Renderable, Updatable {
 		this.y = y;
 	}
 
+	public float getX() {
+		return x;
+	}
+
+	public void setX(float x) {
+		this.x = x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	public void setY(float y) {
+		this.y = y;
+	}
+
 	@Override
 	public void update(long frameTime) {
 		x = (x + speedXPxPerMilliSec*frameTime) % infiniteTile.getBufferedImage().getWidth();

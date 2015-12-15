@@ -209,7 +209,7 @@ public class Resources {
 		try{
 			System.out.print("Loading Game Assets data...");
 			String folderPath = "res/images/gamepanel/";
-			gameEnemySpriteMap = loadSpriteMap(spriteFolderPath+"enemy_sprite.png", 20, 1);
+			gameEnemySpriteMap = loadSpriteMap(spriteFolderPath+"enemy_sprite.png", 24, 1);
 			closeButton = loadSpriteMap(spriteFolderPath+"x_sprite.png", 3, 1);
 			playerSprite = ImageIO.read(loader.getResource(folderPath + "player.png"));
 			raySprite = ImageIO.read(loader.getResource(folderPath + "ray.png"));
@@ -271,15 +271,12 @@ public class Resources {
 				leftArrow = new SpriteMap(ImageIO.read(loader
 						.getResource(spriteFolderPath
 								+ "selectmap_arrowleft.png")), 4, 1);
-				// credits =
-				// ImageIO.read(loader.getResource(folderPath+"main_credits.png"));
 				back = backButton;
 				System.out.println("Sucess!!!");
 			} catch (IOException e) {
 				background = null;
 				tag = null;
 				sideArrow = null;
-				// credits = null;
 				back = null;
 				System.out.println("Failed");
 				e.printStackTrace();
@@ -302,17 +299,11 @@ public class Resources {
 				leftArrow = new SpriteMap(
 						ImageIO.read(loader.getResource(spriteFolderPath
 								+ "setting_arrowleft.png")), 4, 1);
-				// setting =
-				// ImageIO.read(loader.getResource(folderPath+"main_setting.png"));
-				// credits =
-				// ImageIO.read(loader.getResource(folderPath+"main_credits.png"));
 				back = backButton;
 				System.out.println("Sucess!!!");
 			} catch (IOException e) {
 				background = null;
 				rightArrow = null;
-				// setting = null;
-				// credits = null;
 				back = null;
 				System.out.println("Failed");
 				e.printStackTrace();
@@ -321,27 +312,21 @@ public class Resources {
 	}
 
 	public static class CreditsGUI {
-		public static BufferedImage background;
+		public static BufferedImage background, script;
 		public static SpriteMap back;
 		static {
 			try {
 				System.out.print("Loading CreditsGUI data...");
-				String folderPath = "res/images/setting_gui/";
+				String folderPath = "res/images/credits_gui/";
 				background = ImageIO.read(loader.getResource(folderPath
-						+ "setting_background.png"));
-				// start =
-				// ImageIO.read(loader.getResource(folderPath+"main_startgame.png"));
-				// setting =
-				// ImageIO.read(loader.getResource(folderPath+"main_setting.png"));
-				// credits =
-				// ImageIO.read(loader.getResource(folderPath+"main_credits.png"));
-				back = backButton;
+						+ "credits_background.png"));
+				script = ImageIO.read(loader.getResource(folderPath
+						+ "credit_script.png"));
+				back = loadSpriteMap(spriteFolderPath + "credits_sprite.png", 3, 1);
 				System.out.println("Sucess!!!");
 			} catch (IOException e) {
 				background = null;
-				// start = null;
-				// setting = null;
-				// credits = null;
+				script = null;
 				back = null;
 				System.out.println("Failed");
 				e.printStackTrace();

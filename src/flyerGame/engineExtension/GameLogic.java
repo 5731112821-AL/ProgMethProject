@@ -109,7 +109,7 @@ public class GameLogic extends engine.game.Logic {
 	}
 
 	private int hitCircleToAddCounter = 0;
-//	private int hitCircleToPlaySoundCounter = 0; TODO
+	private int hitCircleToPlaySoundCounter = 0;
 	
 	static private Range spawnFieldY = new Range(0, Resources.gameFieldY.max/2);
 	
@@ -163,12 +163,21 @@ public class GameLogic extends engine.game.Logic {
 				int offscreenSpawnOffset = 1;
 				float y = Range.normalize(currentHitCircleToAdd.y, new Range(0, 512), spawnFieldY);
 				long diffTime = (long) ((y+offscreenSpawnOffset)/Resources.gameSpeed);
-				if(currentHitCircleToAdd.time < currentSongTime - diffTime){
+				if(currentHitCircleToAdd.time < currentSongTime + diffTime){
 					addTarget(new EnemyTarget(
 							1,
 							Range.normalize(currentHitCircleToAdd.x, new Range(0, 512), Resources.gameFieldX), 
 							-offscreenSpawnOffset, diffTime));
 					hitCircleToAddCounter++;
+				}
+				else break;
+			}
+			while(hitCircleToPlaySoundCounter < hitCircles.size()){
+				HitCircle currentHitCircleSoundToPlay = hitCircles.get(hitCircleToPlaySoundCounter);
+				if(currentHitCircleSoundToPlay.time < currentSongTime){
+					Resources.soundFxDrum.play();
+					System.out.println("Play sound at" + currentSongTime);
+					hitCircleToPlaySoundCounter++;
 				}
 				else break;
 			}

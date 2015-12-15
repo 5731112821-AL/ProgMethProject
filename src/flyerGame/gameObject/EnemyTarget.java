@@ -25,7 +25,7 @@ public class EnemyTarget extends Target{
 //		transformOp = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
 	}
 
-	private static Range enemyField = new Range(Resources.gameFieldExY.min-3, Resources.gameFieldExY.max);
+	private static Range enemyField = new Range(Resources.gameFieldExY.min-3, Resources.gameFieldY.max-1);
 	
 	private long diffTime;
 	
@@ -50,7 +50,7 @@ public class EnemyTarget extends Target{
 		return opened;
 	}
 	
-	private int destoryTime = 2;
+	private int destoryTime = 8;
 	private boolean isDestoryed = false;
 	
 	private boolean destoryedByLeavingTheScreen = false;
@@ -74,11 +74,12 @@ public class EnemyTarget extends Target{
 	public void update(long frameTime) {
 		setY( getY() + speedY*frameTime );
 		if(!opened){
-			this.diffTime -= frameTime;
-			if(this.diffTime < 0){
-				this.diffTime = 0;
-				Resources.soundFxDrum.play();
-				opened = true;
+			synchronized (this) {
+				this.diffTime -= frameTime;
+				if(this.diffTime < 0){
+					this.diffTime = 0;
+					opened = true;
+				}
 			}
 		}
 	}
@@ -88,13 +89,15 @@ public class EnemyTarget extends Target{
 		int x = (int) Range.normalize(getX(), Resources.gameFieldX, Resources.virtualScreenGameFieldX);
 		int y = (int) Range.normalize(getY(), Resources.gameFieldY, Resources.virtualScreenGameFieldY);
 		if(isDestoryed){
-			spriteMap.render(g, x, y, null, 19, true);
+			spriteMap.render(g, x, y, null, 23-destoryTime/2, true);
 			destoryTime--;
-			if(destoryTime == 0)
+			if(destoryTime == -1)
 				super.destory();
 		} else {
-			int currentframe = (int) Range.map(Math.min(diffTime, timing.min), timing, frameCount);
-			spriteMap.render(g, x, y, null, currentframe, true);
+			synchronized (this) {
+				int currentframe = (int) Range.map(Math.min(diffTime, timing.min), timing, frameCount);
+				spriteMap.render(g, x, y, null, currentframe, true);
+			}
 		}
 		if(Resources.debugMode){
 			Graphics2D g2d = ((Graphics2D)g);
