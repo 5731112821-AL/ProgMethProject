@@ -10,6 +10,7 @@ import engine.render.RenderLayer;
 import engine.render.RenderLayer.Renderable;
 
 /**
+ * @deprecated <br>
  * For handling multiple UI Elements on multiple Layers.
  * The UISystem handling both Rendering and Inputs for each UIElements.
  * @author BobbyL2k

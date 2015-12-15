@@ -197,6 +197,7 @@ public class SystemLogic extends engine.game.Logic {
 			scoreReportGui.setEnable(true);
 			scoreReportGui.setMaxComboValue(gameLogic.getMaxCombo());
 			scoreReportGui.setScoreValue(gameLogic.getScore());
+			gameLogic = null;
 			gameRunning=false;
 		}
 	}
