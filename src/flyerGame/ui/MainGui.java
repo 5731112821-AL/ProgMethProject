@@ -11,10 +11,14 @@ import flyerGame.engineExtension.SystemLogic.Action;
 
 public class MainGui extends Gui {
 	
+
+	private VisibleObject background;
 	private Button startButton, settingButton, creditsButton, exitButton;
 
 	public MainGui(SystemLogic systemLogic) {
+		
 		int offset = Resources.globalOffset;
+		
 		startButton = new Button(Resources.MainGUI.start, 660+offset, 730, new DefaultedMouseListener() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
@@ -47,9 +51,22 @@ public class MainGui extends Gui {
 		});
 		buttons.add(exitButton);
 		
-		renderablesToAdd.add(new VisibleObject(Resources.MainGUI.background, offset, 0, 0, 0));
+		background = new VisibleObject(Resources.MainGUI.background, offset, 0, 0, 0);
+		renderablesToAdd.add(background);
 
 		postConstrutorConfig();
+	}
+
+	@Override
+	public void updateRenderableStates() {
+		int offset = Resources.globalOffset;
+
+		background.setScreenX(offset);
+		
+		startButton.setScreenX(660+offset);
+		settingButton.setScreenX(830+offset);
+		creditsButton.setScreenX(860+offset);
+		exitButton.setScreenX(900+offset);
 	}
 
 }

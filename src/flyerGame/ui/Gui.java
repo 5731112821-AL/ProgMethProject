@@ -40,4 +40,6 @@ public abstract class Gui {
 	public RenderLayer getRenderLayer() {
 		return renderLayer;
 	}
+
+	public abstract void updateRenderableStates();
 }

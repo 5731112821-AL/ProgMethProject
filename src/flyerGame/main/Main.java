@@ -12,6 +12,8 @@ import flyerGame.engineExtension.SystemLogic;
 public class Main {
 	
 	public static JFrame frame;
+	public static GamePanel gamePanel;
+	
 	
 	public static void main(String[] args) {
 		
@@ -19,7 +21,7 @@ public class Main {
 
 		System.out.println("creating gamepanel");
 		System.out.println(Resources.screenDimension);
-		GamePanel gamePanel = new GamePanel(Resources.screenDimension, Resources.scale);
+		gamePanel = new GamePanel(Resources.screenDimension, Resources.scale);
 		System.out.println("created gamepanel");
 		{/// Prepare Game Panel as Main Panel of JFrame
 			InputManager.addComponent(gamePanel); 	// Bound Input System to this Panel
@@ -27,7 +29,7 @@ public class Main {
 
 		SystemLogic systemLogic = new SystemLogic(gamePanel);
 
-		frame = new JFrame("Flyer Game");
+		frame = new JFrame("Beats Arcade");
 		{/// Prepare JFrame to create a window
 			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 													// Close game on Exiting the window, prevent memory leak during development

@@ -92,6 +92,7 @@ public class InputManager {
 		
 		private MouseListener mouseListener;
 		private Range boundX,boundY;
+
 		private double zIndex;
 	
 		private boolean isActive;
@@ -103,7 +104,25 @@ public class InputManager {
 			this.zIndex = zIndex;
 			this.isActive = true;
 		}
-		
+
+		public Range getBoundX() {
+			return boundX;
+		}
+
+
+		public void setBoundX(Range boundX) {
+			this.boundX = boundX;
+		}
+
+
+		public Range getBoundY() {
+			return boundY;
+		}
+
+
+		public void setBoundY(Range boundY) {
+			this.boundY = boundY;
+		}
 	
 		public boolean isActive() {
 			return isActive;

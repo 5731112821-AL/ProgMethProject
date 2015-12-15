@@ -21,6 +21,7 @@ import engine.render.InfiniteTile;
 import engine.render.SpriteMap;
 import engine.utilities.Range;
 import flyerGame.main.SongIndexer.Song;
+import flyerGame.ui.SettingGui;
 
 public class Resources {
 	
@@ -29,11 +30,11 @@ public class Resources {
 	private Resources() {
 	}
 
-	public static int
-		ratioHeight, ratioWidth;
+	public static int ratioWidth;
 	
 	public static final int 
-			virtualScreenHeight = 1080;
+			virtualScreenHeight = 1080,
+			ratioHeight = 9;
 	public static int 
 			virtualScreenWidth;
 
@@ -65,14 +66,15 @@ public class Resources {
 		selectMapStandardFontSize, selectMapLargeFontSize,
 		settingStandardFontSize, scoreFontSize;
 
-	static{// TODO Set here
-		ratioWidth = 16; ratioHeight = 9; 
-		screenHeight = 768;
+	static{// TODO Values That can be set
+//		ratioWidth -> 16; 
+//		screenHeight -> 768;
+		recalculateScreenProperties(16, 768);
+		
 		selectMapStandardFontSize = 25f;
 		selectMapLargeFontSize = 40f;
 		settingStandardFontSize = 40f;
 		scoreFontSize = 60f;
-		recalculateScreenProperties();
 		
 		System.out.println("virtualScreenWidth " + virtualScreenWidth);
 		System.out.println("screenWidth " + screenWidth);
@@ -95,12 +97,14 @@ public class Resources {
 		System.out.println("screenDimension " + screenDimension);
 	}
 	
-	public static final void recalculateScreenProperties(){
-		// ratioHeight, ratioWidth Must be set
+	public static final void recalculateScreenProperties(int in1, int in2){
+		// ratioWidth Must be set
+		ratioWidth = in1;
 
 		virtualScreenWidth = virtualScreenHeight*ratioWidth/ratioHeight;
 
 		// screenHeight Must be set
+		screenHeight = in2;
 		screenWidth = screenHeight*ratioWidth/ratioHeight;
 
 		globalOffset = (virtualScreenWidth-1920)/2;
@@ -145,6 +149,7 @@ public class Resources {
 
 	public static Font selectMapStandardFont, selectMapLargeFont, settingStandardFont, scoreFont;
 	public static Color fontColor = new Color(246, 184, 152);
+	public static Color settingFontColor = Color.WHITE;
 
 	static {
 		// Load images and SoundFx
@@ -451,5 +456,16 @@ public class Resources {
 	static{
 		resourcesLoader.start();
 	}
+	
+	/*
+	public static void setScreenRatio(int option){
+		if(option <= 0){
+			ratioWidth = 4;
+			ratioHeight = 3;
+		}else{
+			ratioWidth = 16;
+			ratioHeight = 9;
+		}
+	}*/
 	
 }

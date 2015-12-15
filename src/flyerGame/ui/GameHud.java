@@ -106,5 +106,8 @@ public class GameHud extends Gui {
 		
 		
 	}
+
+	@Override
+	public void updateRenderableStates() {}
 	
 }

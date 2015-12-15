@@ -19,6 +19,18 @@ public class Button extends VisibleObject {
 	
 	protected boolean hover = false, enable = true, clicked = false;
 
+	@Override
+	public void setScreenX(int screenX) {
+		super.setScreenX(screenX);
+		screenMouseListener.setBoundX( new Range(getScreenX(), getScreenX()+getWidth()) ); 
+	}
+	
+	@Override
+	public void setScreenY(int screenY) {
+		super.setScreenY(screenY);
+		screenMouseListener.setBoundY( new Range(getScreenY(), getScreenY()+getHeight()) ); 
+	}
+	
 	private void updateState(){
 		if(enable)
 			if(hover)

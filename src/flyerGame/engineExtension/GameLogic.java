@@ -107,8 +107,9 @@ public class GameLogic extends engine.game.Logic {
 //		});
 		
 	}
-	
-	int hitCircleCounter = 0;
+
+	private int hitCircleToAddCounter = 0;
+//	private int hitCircleToPlaySoundCounter = 0; TODO
 	
 	static private Range spawnFieldY = new Range(0, Resources.gameFieldY.max/2);
 	
@@ -157,17 +158,17 @@ public class GameLogic extends engine.game.Logic {
 		
 		long currentSongTime = System.currentTimeMillis() - songStartTime;
 		if(hitCircles != null){
-			while(hitCircleCounter < hitCircles.size()){
-				HitCircle currentHitCircle = hitCircles.get(hitCircleCounter);
+			while(hitCircleToAddCounter < hitCircles.size()){
+				HitCircle currentHitCircleToAdd = hitCircles.get(hitCircleToAddCounter);
 				int offscreenSpawnOffset = 1;
-				float y = Range.normalize(currentHitCircle.y, new Range(0, 512), spawnFieldY);
+				float y = Range.normalize(currentHitCircleToAdd.y, new Range(0, 512), spawnFieldY);
 				long diffTime = (long) ((y+offscreenSpawnOffset)/Resources.gameSpeed);
-				if(currentHitCircle.time < currentSongTime - diffTime){
+				if(currentHitCircleToAdd.time < currentSongTime - diffTime){
 					addTarget(new EnemyTarget(
 							1,
-							Range.normalize(currentHitCircle.x, new Range(0, 512), Resources.gameFieldX), 
+							Range.normalize(currentHitCircleToAdd.x, new Range(0, 512), Resources.gameFieldX), 
 							-offscreenSpawnOffset, diffTime));
-					hitCircleCounter++;
+					hitCircleToAddCounter++;
 				}
 				else break;
 			}

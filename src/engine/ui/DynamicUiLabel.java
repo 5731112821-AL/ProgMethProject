@@ -5,6 +5,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.security.AllPermission;
 
 import engine.render.RenderLayer.Renderable;
 import flyerGame.engineExtension.Resources;
@@ -12,7 +13,7 @@ import flyerGame.engineExtension.Resources;
 public class DynamicUiLabel implements Renderable {
 	
 	public enum Align{
-		left, right
+		left, right, center
 	}
 	
 	public static interface GetString{
@@ -35,6 +36,14 @@ public class DynamicUiLabel implements Renderable {
 		this.color = color;
 	}
 	
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
 	protected Font getFont() {
 		return this.font;
 	}
@@ -51,13 +60,18 @@ public class DynamicUiLabel implements Renderable {
 		Font font = getFont();
 		g2d.setFont(font);
 		g2d.setTransform(Resources.scaledTransform);
+		
+		FontMetrics metrics = g.getFontMetrics(font);
+		int adv = metrics.stringWidth(str);
+		
 		if(align == Align.left){
 			g2d.drawString(str, x, y);
 		}
-		else{
-			FontMetrics metrics = g.getFontMetrics(font);
-			int adv = metrics.stringWidth(str);
+		else if(align == Align.right){
 			g2d.drawString(str, x-adv, y);
+		}
+		else {
+			g2d.drawString(str, x-adv/2, y);
 		}
 	}
 

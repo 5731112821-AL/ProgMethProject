@@ -30,11 +30,16 @@ public class CreditsGui extends Gui{
 				backButton.setHover(false);}
 		});
 		buttons.add(backButton);
-		buttons.add(backButton);
 		
 		renderablesToAdd.add(new VisibleObject(Resources.SettingGUI.background, offset, 0, 0, 0));
 		
 		postConstrutorConfig();
+	}
+
+	@Override
+	public void updateRenderableStates() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

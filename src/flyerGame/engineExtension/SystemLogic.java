@@ -23,7 +23,8 @@ public class SystemLogic extends engine.game.Logic {
 	private GamePanel gamePanel;
 	private boolean gameRunning;
 	private GameLogic gameLogic;
-	private int currentSongIndex;
+	public int currentSongIndex;
+	private int currentBeatmapIndex;
 
 	public SystemLogic(GamePanel gamePanel) {
 		super(TARGET_FPS);
@@ -33,12 +34,22 @@ public class SystemLogic extends engine.game.Logic {
 			updatePostList.add(gamePanel);// Add gamePanel's render system to render after the GameLoop (updatePostList)
 		}
 		initUI();
-		setCurrentSongIndex(0);
-//		setCurrentSongIndex((int)(Math.random()*Resources.songs.size()));
+//		setCurrentSongIndex(0);
+		setCurrentSongIndex((int)(Math.random()*Resources.songs.size()));
 	}
 
 	public int getCurrentSongIndex() {
 		return currentSongIndex;
+	}
+	public int getCurrentBeatmapIndex() {
+		return currentBeatmapIndex;
+	}
+	public void setCurrentBeatmapIndex(int currentBeatmapIndex){
+		if(currentBeatmapIndex>=0 && currentBeatmapIndex<Resources.songs.get(this.currentSongIndex).beatmapNames.size()){
+			System.out.println("current beatmap = "+currentBeatmapIndex);
+			selectMapGui.setBeatmapIndex(currentBeatmapIndex);
+			this.currentBeatmapIndex=currentBeatmapIndex;
+		}
 	}
 
 	public void setCurrentSongIndex(int currentSongIndex) {
@@ -51,7 +62,7 @@ public class SystemLogic extends engine.game.Logic {
 	}
 
 	public static enum Action{
-		startGame, selectMap, setting, credits, back, exit
+		startGame, selectMap, setting, screenRenderingUpdate, credits, back, exit
 	}
 	public void action(Action action){
 		switch (action) {
@@ -59,7 +70,7 @@ public class SystemLogic extends engine.game.Logic {
 			System.out.println("Start");
 			gameRunning = true;
 			Song song = Resources.songs.get(currentSongIndex);
-			OsuBeatmap osuBeatmap = Resources.loadOsuBeatmap(song.folderPath + song.beatmapNames.get(song.beatmapNames.size()-1));
+			OsuBeatmap osuBeatmap = Resources.loadOsuBeatmap(song.folderPath + song.beatmapNames.get(this.currentBeatmapIndex));
 			gameLogic = new GameLogic(
 					gamePanel, 
 					song, 
@@ -78,6 +89,13 @@ public class SystemLogic extends engine.game.Logic {
 			System.out.println("Setting");
 			settingGui.setEnable(true);
 			mainGui.setEnable(false);
+			break;
+			
+		case screenRenderingUpdate:
+			mainGui.updateRenderableStates();
+			settingGui.updateRenderableStates();
+			creditsGui.updateRenderableStates();
+			selectMapGui.updateRenderableStates();
 			break;
 
 		case credits:
@@ -113,7 +131,8 @@ public class SystemLogic extends engine.game.Logic {
 		
 		mainGui = new MainGui(this);
 		gamePanelRenderLayers.add(mainGui.getRenderLayer());
-		settingGui = new SettingGui(this);
+		int[] data = {1,2};
+		settingGui = new SettingGui(this, data);
 		gamePanelRenderLayers.add(settingGui.getRenderLayer());
 		creditsGui = new CreditsGui(this);
 		gamePanelRenderLayers.add(creditsGui.getRenderLayer());
@@ -127,15 +146,6 @@ public class SystemLogic extends engine.game.Logic {
 	protected void logicLoop(long frameTime) {
 		gamePanel.requestFocus();
 		if(!gameRunning){
-			if(InputManager.isKeyActive(InputManager.KEY_ESC)){
-				stopLogic();
-			}
-			if(mainGui.isEnable()){
-				if(InputManager.isKeyActive(InputManager.KEY_ENTER)){
-					action(Action.selectMap);
-					InputManager.forceFlushKeys();
-				}
-			}
 			if(selectMapGui.isEnable()){
 				if(InputManager.isKeyActive(InputManager.KEY_RIGHT_ARROW)){
 					System.out.println("next song");
@@ -148,6 +158,22 @@ public class SystemLogic extends engine.game.Logic {
 				}
 				else if(InputManager.isKeyActive(InputManager.KEY_ENTER)){
 					action(Action.startGame);
+				}
+			}
+			
+			if(mainGui.isEnable()){
+				if(InputManager.isKeyActive(InputManager.KEY_ENTER)){
+					action(Action.selectMap);
+					InputManager.forceFlushKeys();
+				}
+				if(InputManager.isKeyActive(InputManager.KEY_ESC)){
+					stopLogic();
+				}
+			}
+			else{
+				if(InputManager.isKeyActive(InputManager.KEY_ESC)){
+					action(Action.back);
+					InputManager.forceFlushKeys();
 				}
 			}
 		}else{
