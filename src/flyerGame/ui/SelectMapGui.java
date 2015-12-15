@@ -117,6 +117,7 @@ public class SelectMapGui extends Gui {
 		this.beatmapIndex = index;
 		prevDiffButton.setEnable(index > 0);
 		nextDiffButton.setEnable(index < Resources.songs.get(this.songIndex).beatmapNames.size()-1);
+		System.out.println(Resources.songs.get(this.songIndex).beatmapNames.size());
 		textReload();
 	}
 	
@@ -162,11 +163,10 @@ public class SelectMapGui extends Gui {
 	public void setSongIndex(int index){
 		System.out.println("setSongIndex " + index);
 		if(index != this.songIndex){
-			this.beatmapIndex=0;
+			this.songIndex = index;
 			setBeatmapIndex(0);
 		}
 		
-		this.songIndex = index;
 		nextSongButton.setEnable(index < Resources.songs.size()-1);
 		imageReload();
 		textReload();

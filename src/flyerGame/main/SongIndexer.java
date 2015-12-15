@@ -6,7 +6,10 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -55,6 +58,8 @@ public class SongIndexer {
 		}
 	}
 	
+	private static Map<String, Double> beatmapDiff = new TreeMap<String, Double>();
+	
 	private static void index() throws IOException{
 		File songsDir = new File("src/res/songs");
 		if(!songsDir.exists())
@@ -82,12 +87,24 @@ public class SongIndexer {
 						song.songName = songName;
 						if(beatmap.data.get("General").get("Mode").compareTo("0") == 0){
 							song.beatmapNames.add(fileName);
-							System.out.println("Added "+fileName);
+							beatmapDiff.put(fileName, Double.parseDouble(beatmap.data.get("Difficulty").get("OverallDifficulty")));
+//							System.out.println("Added "+fileName);
 						}
 					}
 				}
 				if(song.songName.length() != 0 && song.folderPath.length() != 0 && song.beatmapNames.size() != 0){
 					System.out.println(song.songName + " is indexed");
+					song.beatmapNames.sort(new Comparator<String>() {
+
+						@Override
+						public int compare(String o1, String o2) {
+							return beatmapDiff.get(o1).compareTo(beatmapDiff.get(o2));
+						}
+						
+					});
+					for(String name : song.beatmapNames){
+						System.out.println(name + " " + beatmapDiff.get(name));
+					}
 					songs.add(song);
 				}
 			}

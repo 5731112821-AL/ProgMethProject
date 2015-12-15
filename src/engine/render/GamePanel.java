@@ -14,6 +14,7 @@ import javax.swing.JFrame;
 
 import engine.game.Logic.Updatable;
 //import flyerGame.engineExtension.Resources;
+import flyerGame.engineExtension.Resources;
 
 /**
  * Is used for all rendering in the Engine. This includes UI and game elements.
@@ -25,7 +26,6 @@ public class GamePanel extends JComponent implements Updatable{
 	
 	private Dimension dimension;
 	private ArrayList<RenderLayer> renderLayers;
-	private AffineTransform transform;
 	
 	/**
 	 * renderLayers is automatically initialized to an empty list
@@ -44,8 +44,6 @@ public class GamePanel extends JComponent implements Updatable{
 		this.dimension = dimension;
 		this.setRenderLayers(renderLayers);
 		this.setPreferredSize(dimension);
-		this.transform = new AffineTransform();
-		transform.scale(scale, scale);
 	}
 	
 	@Override
@@ -60,7 +58,7 @@ public class GamePanel extends JComponent implements Updatable{
 		g2d.setBackground(Color.BLACK);
 		g2d.fillRect(0, 0, dimension.width, dimension.height);
 		
-		g2d.setTransform(transform);
+		g2d.setTransform(Resources.scaledTransform);
 		
 		if(renderLayers != null){
 			for (int i = 0; i < renderLayers.size(); i++) {

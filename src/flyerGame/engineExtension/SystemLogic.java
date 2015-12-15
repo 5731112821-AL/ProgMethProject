@@ -48,7 +48,7 @@ public class SystemLogic extends engine.game.Logic {
 		if(currentBeatmapIndex>=0 && currentBeatmapIndex<Resources.songs.get(this.currentSongIndex).beatmapNames.size()){
 			System.out.println("current beatmap = "+currentBeatmapIndex);
 			selectMapGui.setBeatmapIndex(currentBeatmapIndex);
-			this.currentBeatmapIndex=currentBeatmapIndex;
+			this.currentBeatmapIndex=currentBeatmapIndex; // TODO
 		}
 	}
 
@@ -92,6 +92,7 @@ public class SystemLogic extends engine.game.Logic {
 			break;
 			
 		case screenRenderingUpdate:
+			System.out.println("updateRenderableStates");
 			mainGui.updateRenderableStates();
 			settingGui.updateRenderableStates();
 			creditsGui.updateRenderableStates();
@@ -101,10 +102,6 @@ public class SystemLogic extends engine.game.Logic {
 		case credits:
 			System.out.println("Credits");
 			creditsGui.setEnable(true);
-//			Resources.screenHeight = 600;
-//			Resources.recalculateScreenProperties();
-//			gamePanel.setPreferredSize(Resources.screenDimension);
-//			Main.frame.pack();
 			mainGui.setEnable(false);
 			break;
 
@@ -124,6 +121,7 @@ public class SystemLogic extends engine.game.Logic {
 		default:
 			break;
 		}
+		System.out.println(Resources.scale);
 	}
 
 	private void initUI() {
@@ -179,6 +177,7 @@ public class SystemLogic extends engine.game.Logic {
 		}else{
 			gameLogic.runLogic();
 			selectMapGui.setEnable(true);
+//			scoreReportGui.setEnable(true); // TODO
 			gameRunning=false;
 		}
 	}

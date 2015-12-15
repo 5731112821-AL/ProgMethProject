@@ -181,6 +181,9 @@ public class GameLogic extends engine.game.Logic {
 				}
 				else break;
 			}
+			if(hitCircleToPlaySoundCounter >= hitCircles.size() && hitCircleToAddCounter >= hitCircles.size()){
+				requestClose();
+			}
 		}
 		
 		for(Bullet bullet : bulletList){
@@ -205,6 +208,7 @@ public class GameLogic extends engine.game.Logic {
 	
 	private int combo = 0;
 	private int score = 0;
+	private int maxCombo = 0;
 
 	public int getScore() {
 		return score;
@@ -212,9 +216,17 @@ public class GameLogic extends engine.game.Logic {
 	public int getCombo() {
 		return combo;
 	}
+	public void setCombo(int combo) {
+		this.combo = combo;
+		this.maxCombo = Math.max(this.maxCombo, getCombo());
+	}
+	
+	public int getMaxCombo() {
+		return maxCombo;
+	}
 
 	private void hitTarget(){
-		combo++;
+		setCombo(getCombo()+1);
 		score += 100 * (1f+combo/comboDivider);
 	}
 
@@ -224,7 +236,7 @@ public class GameLogic extends engine.game.Logic {
 			if( ((EnemyTarget) gameObject2D).isDestoryedByLeavingTheScreen() ){
 				this.reduceHealth(healthReduceRatePerHit);
 				this.recoverCountdown = recoverDelayMiliSec;
-				combo = 0;
+				setCombo(0);
 			}else{
 				hitTarget();
 			}
