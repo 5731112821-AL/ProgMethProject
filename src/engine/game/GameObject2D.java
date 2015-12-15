@@ -3,6 +3,14 @@ package engine.game;
 import engine.utilities.Cordinate2D;
 import engine.utilities.Range;
 
+/**
+ * Is a foundation class for any game object. GameObject2D implements
+ * {@link Cordinate2D}, this is meant to keep "Game Coordinates", which is
+ * the coordinate value of the object in "Game Space" as oppose to "Screen Space".
+ * It also has {@link destroy()}, this is used to keep track of the game objects
+ * inside of {@link Logic}
+ * @author L2k-nForce
+ */
 public abstract class GameObject2D implements Cordinate2D{
 	
 	private float x,y;
@@ -11,10 +19,12 @@ public abstract class GameObject2D implements Cordinate2D{
 	private Range xRange, yRange;
 
 	/**
-	 * @param x - x-axis value of the Game Coordinate
-	 * @param y - y-axis value of the Game Coordinate
-	 * @param xRange - Bound of the x-axis value of the Game Coordinate
-	 * @param yRange - Bound of the y-axis value of the Game Coordinate
+	 * @param x is x-axis value of the Game Coordinate
+	 * @param y is y-axis value of the Game Coordinate
+	 * @param xRange Bound of the x-axis value of the Game 
+	 * Coordinate in which the {@link x} can be set. If left {@code null}
+	 * the range is unbound.
+	 * @param yRange Same as xRange but for the y coordinate.
 	 */
 	public GameObject2D(float x, float y, Range xRange, Range yRange) {
 		super();
@@ -56,7 +66,8 @@ public abstract class GameObject2D implements Cordinate2D{
 	}
 	
 	/**
-	 * When the {@link GameObject2D} is destroyed, it is 
+	 * Destroys the {@link GameObject2D}.
+	 * When the object is destroyed, it is 
 	 * automatically removed from the {@link Logic}
 	 */
 	protected void destory() {
